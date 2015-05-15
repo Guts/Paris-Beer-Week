@@ -1,8 +1,7 @@
-#! python3.4
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env
 
-# from __future__ import (unicode_literals, print_function)
+from __future__ import (unicode_literals, print_function)
 # -----------------------------------------------------------------------------
 # Name:         Parser Geocoder from Excel file
 # Purpose:      todo
@@ -21,18 +20,12 @@
 ###################################
 
 # Standard library
-# import urllib.request
-import json
-import datetime
-import urllib2
-
 
 # Python 3 backported
 
-
 # 3rd party libraries
 from geojson import dump, Feature, FeatureCollection, Point
-import requests
+import overpy
 
 # Custom modules
 
@@ -40,37 +33,125 @@ import requests
 ########### Main program ##########
 ###################################
 
-bbox = (48.8529, 2.3222, 48.8452, 2.3643)
+# liste pour stocker les différents points
+li_openBeerMap = []
+
+# création de l'instace de l'API overpass
+api = overpy.Overpass()
+
+# zone dans laquelle rechercher
+bbox = (48.658291, 2.086790, 49.046940, 2.637910)  # Paris
+
+# stockages des résultats pour trier plus facilement ensuite
+bars = api.query(str("node{0}[amenity=bar];out;".format(bbox)))
+pubs = api.query(str("node{0}[amenity=pub];out;".format(bbox)))
+brasseries_art = api.query(str("node{0}[craft=brewery];out;".format(bbox)))
+
+# quelques petites stats
+print(len(bars.nodes))
+print(len(pubs.nodes))
+print(len(brasseries_art.nodes))
+
+x = 1
+
+# liste des bars où la bière est précisée
+for node in bars.nodes:
+    if 'brewery' in node.tags.keys():
+        x += 1
+        #
+        if node.tags.get('microbrewery') == 'yes':
+            ownBrew = 'Oui'
+        else:
+            ownBrew = 'Non'
+
+        # on liste les bières répertoriées
+        str_kindBeers = node.tags.get('brewery')
+        li_kindBeers = str_kindBeers.split(";")
+        li_kindBeers = map(lambda x: x.capitalize(), li_kindBeers)
+
+        # création de l'objet géographique
+        point = Point((round(node.lon, 4), round(node.lat, 4)))
+        obj = Feature(geometry=point,
+                      id=x,
+                      properties={"NAME": node.tags.get('name'),
+                                  "TYPE": node.tags.get('amenity'),
+                                  "BEERS": sorted(li_kindBeers),
+                                  "BREWER": ownBrew,
+                                  "OSM_ID": node.id
+                                  })
+
+        li_openBeerMap.append(obj)
+    else:
+        pass
+
+# liste des pubs où la bière est précisée
+for node in pubs.nodes:
+    if 'brewery' in node.tags.keys():
+        x += 1
+        #
+        if node.tags.get('microbrewery') == 'yes':
+            ownBrew = 'Oui'
+        else:
+            ownBrew = 'Non'
+
+        # on liste les bières répertoriées
+        str_kindBeers = node.tags.get('brewery')
+        li_kindBeers = str_kindBeers.split(";")
+        li_kindBeers = map(lambda x: x.capitalize(), li_kindBeers)
+
+        # création de l'objet géographique
+        point = Point((round(node.lon, 4), round(node.lat, 4)))
+        obj = Feature(geometry=point,
+                      id=x,
+                      properties={"NAME": node.tags.get('name'),
+                                  "TYPE": node.tags.get('amenity'),
+                                  "BEERS": sorted(li_kindBeers),
+                                  "BREWER": ownBrew,
+                                  "OSM_ID": node.id
+                                  })
+
+        li_openBeerMap.append(obj)
+    else:
+        pass
 
 
-rq = "http://api.openstreetmap.fr/oapi/interpreter?data=[out%3Ajson]%3B%0A%0A%28%0A%20%20%2F%2F%20get%20cycle%20route%20relatoins%0A%20%20relation[route%3Dbicycle]%2841.88166362505289%2C12.480323910713196%2C41.88522612431391%2C12.48598337173462%29-%3E.cr%3B%0A%20%20%2F%2F%20get%20cycleways%0A%20%20way[highway%3Dcycleway]%2841.88166362505289%2C12.480323910713196%2C41.88522612431391%2C12.48598337173462%29%3B%0A%20%20way[highway%3Dpath][bicycle%3Ddesignated]%2841.88166362505289%2C12.480323910713196%2C41.88522612431391%2C12.48598337173462%29%3B%0A%29%3B%0A%0Aout%20body%3B%0A%3E%3B%0Aout%20skel%20qt%3B"
+# liste des pubs où la bière est précisée
+for node in brasseries_art.nodes:
+    if 'brewery' in node.tags.keys():
+        x += 1
+        #
+        if node.tags.get('microbrewery') == 'yes':
+            ownBrew = 'Oui'
+        else:
+            ownBrew = 'Non'
 
-rq = "http://api.openstreetmap.fr/oapi/interpreter?data[out:json];(node({0})[amenity=bar];way({0})[amenity=bar];node({0})[amenity=cafe]['cuisine'!='coffee_shop'];way({0})[amenity=cafe]['cuisine'!='coffee_shop'];node({0})[amenity=biergarten];node({0})[microbrewery=yes];node({0})['brewery'];way({0})['brewery'];node({0})[amenity=pub];way({0})[amenity=pub]);out center;>;out;".format(bbox)
-# rq = "http://api.openstreetmap.fr/oapi/interpreter?data[out\:json]\;(node((48.8529, 2.3222, 48.8452, 2.3643))[amenity=bar];way((48.8529, 2.3222, 48.8452, 2.3643))[amenity=bar];node((48.8529, 2.3222, 48.8452, 2.3643))[amenity=cafe]['cuisine'!='coffee_shop'];way((48.8529, 2.3222, 48.8452, 2.3643))[amenity=cafe]['cuisine'!='coffee_shop'];node((48.8529, 2.3222, 48.8452, 2.3643))[amenity=biergarten];node((48.8529, 2.3222, 48.8452, 2.3643))[microbrewery=yes];node((48.8529, 2.3222, 48.8452, 2.3643))['brewery'];way((48.8529, 2.3222, 48.8452, 2.3643))['brewery'];node((48.8529, 2.3222, 48.8452, 2.3643))[amenity=pub];way((48.8529, 2.3222, 48.8452, 2.3643))[amenity=pub]);out center;>;out;"
+        # on liste les bières répertoriées
+        str_kindBeers = node.tags.get('brewery')
+        li_kindBeers = str_kindBeers.split(";")
+        li_kindBeers = map(lambda x: x.capitalize(), li_kindBeers)
+
+        # création de l'objet géographique
+        point = Point((round(node.lon, 4), round(node.lat, 4)))
+        obj = Feature(geometry=point,
+                      id=x,
+                      properties={"NAME": node.tags.get('name'),
+                                  "TYPE": 'Brasserie artisanale',
+                                  "BEERS": sorted(li_kindBeers),
+                                  "BREWER": ownBrew,
+                                  "OSM_ID": node.id
+                                  })
+
+        li_openBeerMap.append(obj)
+    else:
+        pass
 
 
-fullurl = urllib2.quote(rq, safe="%/:=&?~#+!$,;'@()*[]")
-print fullurl
+# sérialisation
+featColl = FeatureCollection(li_openBeerMap)
 
+with open("../OpenBeerMap_IDF.geojson", "w") as outfile:
+    dump(featColl, outfile, sort_keys=True)
 
-# print(rq)
-# youhou = 'http://api.openstreetmap.fr/oapi/interpreter?data{0};{1}'.format("[out:json]", rq)
-# search_req = urllib2.Request('http://api.openstreetmap.fr/oapi/interpreter?data{0};{1}'.format("[out:json]", rq))
-
-# search_req = urllib.request.urlopen(rq)
-search_req = urllib2.Request(fullurl)
-
-# payload = {'key1': 'value1', 'key2[]': ['value2', 'value3']}
-# r = requests.get('http://api.openstreetmap.fr/oapi/interpreter')
-
-# print(youhou)
-# Envoi de la requête dans une boucle de test pour prévenir les erreurs
-try:
-    search_resp = urllib2.urlopen(search_req)
-    search_rez = json.load(search_resp)
-    print(search_rez)
-except urllib2.URLError, e:
-    print(e)
 
 ###############################################################################
 ###### Stand alone program ########
