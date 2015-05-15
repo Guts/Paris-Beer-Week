@@ -7,10 +7,8 @@
 #     pip install -r REQUIREMENTS.txt
 #
 
-# before install python dependencies, you need the ppa ubuntugis activated and some libraries installed on your os:
-# python-setuptools, python-pip, python-dev, python-tk, python-gdal, python-software-properties
-
 # via pypi
 geojson
 geopy
 openpyxl
+requests
