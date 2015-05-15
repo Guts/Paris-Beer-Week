@@ -1,4 +1,4 @@
-var map, featureList, boroughSearch = [], theaterSearch = [], museumSearch = [], participantSearch = [];
+var map, featureList, openBeerMapSearch = [], event15Search = [], museumSearch = [], participantSearch = [];
 
 $(window).resize(function() {
   sizeLayerControl();
@@ -22,7 +22,7 @@ $("#about-btn").click(function() {
 });
 
 $("#full-extent-btn").click(function() {
-  map.fitBounds(boroughs.getBounds());
+  map.fitBounds(participants.getBounds());
   $(".navbar-collapse.in").collapse("hide");
   return false;
 });
@@ -83,11 +83,11 @@ function sidebarClick(id) {
 function syncSidebar() {
   /* Empty sidebar features */
   $("#feature-list tbody").empty();
-  /* Loop through theaters layer and add only features which are in the map bounds */
-  theaters.eachLayer(function (layer) {
-    if (map.hasLayer(theaterLayer)) {
+  /* Loop through events15 layer and add only features which are in the map bounds */
+  events15.eachLayer(function (layer) {
+    if (map.hasLayer(event15Layer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/event15.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
@@ -122,11 +122,13 @@ var mapquestOSM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.
   subdomains: ["otile1", "otile2", "otile3", "otile4"],
   attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA.'
 });
+
 var mapquestOAM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
   maxZoom: 18,
   subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"],
   attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a>. Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'
 });
+
 var mapquestHYB = L.layerGroup([L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
   maxZoom: 18,
   subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"]
@@ -135,6 +137,17 @@ var mapquestHYB = L.layerGroup([L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sa
   subdomains: ["oatile1", "oatile2", "oatile3", "oatile4"],
   attribution: 'Labels courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="http://developer.mapquest.com/content/osm/mq_logo.png">. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA. Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'
 })]);
+
+var popArt = L.tileLayer("https:\/\/a.tiles.mapbox.com\/v4\/katiekowalsky.m5d5cg5h\/{z}\/{x}\/{y}.png?access_token=pk.eyJ1Ijoia2F0aWVrb3dhbHNreSIsImEiOiJHR2hfdlBNIn0.GUMLsSnT-SYx4ew7b77kqw", {
+  minzoom: 0,
+  maxZoom: 22,
+  attribution: '<a href=\"https:\/\/www.mapbox.com\/about\/maps\/\" target=\"_blank\">&copy; Mapbox &copy; OpenStreetMap<\/a> <a class=\"mapbox-improve-map\" href=\"https:\/\/www.mapbox.com\/map-feedback\/\" target=\"_blank\">Improve this map<\/a>'
+});
+
+var stamenToner = L.TileLayer("http://{s}.tile.stamen.com/toner-lite/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: 'Map data <a href="http://openstreetmap.org/">OpenStreetMap</a> contributors'
+});
 
 /* Overlay Layers */
 var highlight = L.geoJson(null);
@@ -145,29 +158,47 @@ var highlightStyle = {
   radius: 10
 };
 
-var boroughs = L.geoJson(null, {
-  style: function (feature) {
-    return {
-      color: "black",
-      fill: false,
-      opacity: 1,
-      clickable: false
-    };
+var openBeerMaps = L.geoJson(null, {
+  pointToLayer: function (feature, latlng) {
+    return L.marker(latlng, {
+      icon: L.icon({
+        iconUrl: "assets/img/event15.png",
+        iconSize: [24, 28],
+        iconAnchor: [12, 28],
+        popupAnchor: [0, -25]
+      }),
+      title: feature.properties.NAME,
+      riseOnHover: false
+    });
   },
   onEachFeature: function (feature, layer) {
-    boroughSearch.push({
-      name: layer.feature.properties.BoroName,
-      source: "Boroughs",
-      id: L.stamp(layer),
-      bounds: layer.getBounds()
-    });
+    if (feature.properties) {
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.NAME + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.TEL + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.ADDRESS1 + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.URL + "' target='_blank'>" + feature.properties.URL + "</a></td></tr>" + "<tr><th>Fiche sur PBW 2015</th><td><a class='url-break' href='" + feature.properties.ed15_URL_FR + "' target='_blank'>" + feature.properties.ed15_URL_FR + "</a></td></tr>" + "<table>";
+      layer.on({
+        click: function (e) {
+          $("#feature-title").html(feature.properties.NAME);
+          $("#feature-info").html(content);
+          $("#featureModal").modal("show");
+          highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
+        }
+      });
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/event15.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      event15Search.push({
+        name: layer.feature.properties.NAME,
+        address: layer.feature.properties.ADDRESS1,
+        source: "Où boire de la bière ?",
+        id: L.stamp(layer),
+        lat: layer.feature.geometry.coordinates[1],
+        lng: layer.feature.geometry.coordinates[0]
+      });
+    }
   }
 });
-$.getJSON("data/boroughs.geojson", function (data) {
-  boroughs.addData(data);
+$.getJSON("data/OpenBeerMap_IDF_2015-05-14.geojson", function (data) {
+  openBeerMaps.addData(data);
 });
 
-var subwayLines = L.geoJson(null, {
+/*var subwayLines = L.geoJson(null, {
   style: function (feature) {
     if (feature.properties.route_id === "1" || feature.properties.route_id === "2" || feature.properties.route_id === "3") {
       return {
@@ -279,7 +310,7 @@ var subwayLines = L.geoJson(null, {
 });
 $.getJSON("data/subways.geojson", function (data) {
   subwayLines.addData(data);
-});
+});*/
 
 /* Single marker cluster layer to hold all clusters */
 var markerClusters = new L.MarkerClusterGroup({
@@ -289,13 +320,13 @@ var markerClusters = new L.MarkerClusterGroup({
   disableClusteringAtZoom: 16
 });
 
-/* Empty layer placeholder to add to layer control for listening when to add/remove theaters to markerClusters layer */
-var theaterLayer = L.geoJson(null);
-var theaters = L.geoJson(null, {
+/* Empty layer placeholder to add to layer control for listening when to add/remove events15 to markerClusters layer */
+var event15Layer = L.geoJson(null);
+var events15 = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {
       icon: L.icon({
-        iconUrl: "assets/img/theater.png",
+        iconUrl: "assets/img/event15.png",
         iconSize: [24, 28],
         iconAnchor: [12, 28],
         popupAnchor: [0, -25]
@@ -315,11 +346,11 @@ var theaters = L.geoJson(null, {
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
       });
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/theater.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-      theaterSearch.push({
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/event15.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      event15Search.push({
         name: layer.feature.properties.NAME,
         address: layer.feature.properties.ADDRESS1,
-        source: "Theaters",
+        source: "Evénements 2015",
         id: L.stamp(layer),
         lat: layer.feature.geometry.coordinates[1],
         lng: layer.feature.geometry.coordinates[0]
@@ -328,8 +359,8 @@ var theaters = L.geoJson(null, {
   }
 });
 $.getJSON("data/DOITT_THEATER_01_13SEPT2010.geojson", function (data) {
-  theaters.addData(data);
-  map.addLayer(theaterLayer);
+  events15.addData(data);
+  /*map.addLayer(event15Layer);*/
 });
 
 /* Empty layer placeholder to add to layer control for listening when to add/remove museums to markerClusters layer */
@@ -372,6 +403,7 @@ var museums = L.geoJson(null, {
 });
 $.getJSON("data/DOITT_MUSEUM_01_13SEPT2010.geojson", function (data) {
   museums.addData(data);
+  /*map.addLayer(museumLayer);*/
 });
 
 /* Empty layer placeholder to add to layer control for listening when to add/remove participants to markerClusters layer */
@@ -391,7 +423,7 @@ var participants = L.geoJson(null, {
   },
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.NAME + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.COUNTRY + "</td></tr>" + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.NAME + "</td></tr>" + "<tr><th>Description</th><td>" + feature.properties.DESCR_FR + "</td></tr>" + "<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.NAME);
@@ -414,23 +446,23 @@ var participants = L.geoJson(null, {
 });
 $.getJSON("data/ParisBeerWeek_participants.geojson", function (data) {
   participants.addData(data);
+  map.addLayer(participantLayer);
 });
 
+/* couches chargées au démarrage */
 map = L.map("map", {
   zoom: 12,
   center: [48.8589, 2.3469],
-  layers: [mapquestOSM, boroughs, markerClusters, highlight],
+  layers: [mapquestOSM, markerClusters, highlight],
   zoomControl: false,
   attributionControl: false
 });
 
 
-
-
 /* Layer control listeners that allow for a single markerClusters layer */
 map.on("overlayadd", function(e) {
-  if (e.layer === theaterLayer) {
-    markerClusters.addLayer(theaters);
+  if (e.layer === event15Layer) {
+    markerClusters.addLayer(events15);
     syncSidebar();
   }
   if (e.layer === museumLayer) {
@@ -444,8 +476,8 @@ map.on("overlayadd", function(e) {
 });
 
 map.on("overlayremove", function(e) {
-  if (e.layer === theaterLayer) {
-    markerClusters.removeLayer(theaters);
+  if (e.layer === event15Layer) {
+    markerClusters.removeLayer(events15);
     syncSidebar();
   }
   if (e.layer === museumLayer) {
@@ -533,20 +565,22 @@ if (document.body.clientWidth <= 767) {
 }
 
 var baseLayers = {
-  "Street Map": mapquestOSM,
-  "Aerial Imagery": mapquestOAM,
-  "Imagery with Streets": mapquestHYB
+  "Plan": mapquestOSM,
+  "Imagerie aérienne": mapquestOAM,
+  "Imagerie et plan": mapquestHYB,
+  "Pop art": popArt,
+  /*"Noir et blanc": stamenToner*/
 };
 
 var groupedOverlays = {
-  "Points of Interest": {
-    "<img src='assets/img/theater.png' width='24' height='28'>&nbsp;Theaters": theaterLayer,
+  "Points d'intérêt": {
+    "<img src='assets/img/event15.png' width='24' height='28'>&nbsp;Evènement 2015": event15Layer,
     "<img src='assets/img/museum.png' width='24' height='28'>&nbsp;Museums": museumLayer,
     "<img src='assets/img/participant.png' width='24' height='28'>&nbsp;Participants": participantLayer
   },
-  "Reference": {
-    "Boroughs": boroughs,
-    "Subway Lines": subwayLines
+  "Référence": {
+    "Open Beer Map": openBeerMaps
+/*    "Subway Lines": subwayLines*/
   }
 };
 
@@ -574,28 +608,28 @@ $("#featureModal").on("hidden.bs.modal", function (e) {
 $(document).one("ajaxStop", function () {
   $("#loading").hide();
   sizeLayerControl();
-  /* Fit map to boroughs bounds */
-  map.fitBounds(boroughs.getBounds());
+  /* Fit map to participants bounds */
+  map.fitBounds(participants.getBounds());
   featureList = new List("features", {valueNames: ["feature-name"]});
   featureList.sort("feature-name", {order:"asc"});
 
-  var boroughsBH = new Bloodhound({
+  var openBeerMapBH = new Bloodhound({
     name: "Boroughs",
     datumTokenizer: function (d) {
       return Bloodhound.tokenizers.whitespace(d.name);
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: boroughSearch,
+    local: openBeerMapSearch,
     limit: 10
   });
 
-  var theatersBH = new Bloodhound({
-    name: "Theaters",
+  var event15BH = new Bloodhound({
+    name: "Evénements 2015",
     datumTokenizer: function (d) {
       return Bloodhound.tokenizers.whitespace(d.name);
     },
     queryTokenizer: Bloodhound.tokenizers.whitespace,
-    local: theaterSearch,
+    local: event15Search,
     limit: 10
   });
 
@@ -649,8 +683,8 @@ $(document).one("ajaxStop", function () {
     },
     limit: 10
   });
-  boroughsBH.initialize();
-  theatersBH.initialize();
+  openBeerMapBH.initialize();
+  event15BH.initialize();
   museumsBH.initialize();
   participantsBH.initialize();
   geonamesBH.initialize();
@@ -663,16 +697,16 @@ $(document).one("ajaxStop", function () {
   }, {
     name: "Boroughs",
     displayKey: "name",
-    source: boroughsBH.ttAdapter(),
+    source: openBeerMapBH.ttAdapter(),
     templates: {
       header: "<h4 class='typeahead-header'>Boroughs</h4>"
     }
   }, {
-    name: "Theaters",
+    name: "Evénements 2015",
     displayKey: "name",
-    source: theatersBH.ttAdapter(),
+    source: event15BH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'><img src='assets/img/theater.png' width='24' height='28'>&nbsp;Theaters</h4>",
+      header: "<h4 class='typeahead-header'><img src='assets/img/event15.png' width='24' height='28'>&nbsp;Evénements 2015</h4>",
       suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
     }
   }, {
@@ -699,12 +733,12 @@ $(document).one("ajaxStop", function () {
       header: "<h4 class='typeahead-header'><img src='assets/img/globe.png' width='25' height='25'>&nbsp;GeoNames</h4>"
     }
   }).on("typeahead:selected", function (obj, datum) {
-    if (datum.source === "Boroughs") {
+/*    if (datum.source === "Boroughs") {
       map.fitBounds(datum.bounds);
-    }
-    if (datum.source === "Theaters") {
-      if (!map.hasLayer(theaterLayer)) {
-        map.addLayer(theaterLayer);
+    }*/
+    if (datum.source === "Evénements 2015") {
+      if (!map.hasLayer(event15Layer)) {
+        map.addLayer(event15Layer);
       }
       map.setView([datum.lat, datum.lng], 17);
       if (map._layers[datum.id]) {
