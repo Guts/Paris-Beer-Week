@@ -27,6 +27,7 @@ from __future__ import (unicode_literals, print_function)
 # 3rd party libraries
 from openpyxl import load_workbook
 from geopy.geocoders import Nominatim
+from geopy.exc import GeocoderTimedOut
 from geojson import dump, Feature, FeatureCollection, Point
 
 # Custom modules
@@ -112,15 +113,21 @@ for row in ws.iter_rows(row_offset=1):
 
     # extraire l'adresse
     nom = row[1].value
-    libelle = str(row[6].value) + " " + row[8].value +  " " + row[9].value
+    libelle = str(row[6].value) + " " + row[8].value + " " + row[9].value
     ville = row[11].value
     addr = nom + ", " + ville + ", France"
     addr2 = row[13].value
     addr3 = nom + ", France"
 
+    print(addr.encode("UTF-8"))
+
     # géocoder
-    geolocator = Nominatim(timeout=60)
-    location = geolocator.geocode(addr)
+    geolocator = Nominatim(timeout=80)
+    try:
+        location = geolocator.geocode(addr)
+    except GeocoderTimedOut:
+        print('TimeOut: Try Again')
+        continue
 
     # tester si un résultat a été renvoyé et dégrader la précision
     if not location:
@@ -138,24 +145,37 @@ for row in ws.iter_rows(row_offset=1):
 
     # on print histoire de montrer ce que l'on a trouvé
     try:
-        print("adresse tentée : " + addr)
+        # print("adresse tentée : " + addr)
         print(location.address)
         print((location.latitude, location.longitude))
     except UnicodeEncodeError:
-        print(addr.encode("UTF-8"))
+        # print(addr.encode("UTF-8"))
         print(location.address.encode("utf8"))
         print((location.latitude, location.longitude))
 
+    # extraction d'informations pour plus facilité
+    if row[14].value:
+        tel = row[14].value
+    else:
+        tel = "NR"
 
-
-    # début sérialisation
+    # stockage dans des objets en vue de la sérialisation
     point = Point((location.longitude, location.latitude))
     obj = Feature(geometry=point,
                   id=row[0].value,
-                  properties={"ADR_COUNTRY": row[12].value, 
+                  properties={"ADR_COUNTRY": row[12].value,
                               "NAME": nom,
-                              "ADDRESS": addr,
+                              "TYPE": row[2].value,
                               "DESCR_FR": row[3].value,
+                              "ADDRESS": addr,
+                              "TEL": tel,
+                              "WEBSITE": row[5].value,
+                              "FACEBOOK": row[22].value,
+                              "TWITTER": row[23].value,
+                              "PBW_2015_FR": row[20].value,
+                              "THUMBNAIL": row[25].value,
+                              "OSM": row[15].value,
+                              "GMAPS": row[16].value
                               })
     li_objs.append(obj)
 
