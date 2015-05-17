@@ -12,4 +12,3 @@ geojson
 geopy
 openpyxl
 overpy
-requests
