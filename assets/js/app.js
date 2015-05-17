@@ -143,6 +143,12 @@ var stamenTonerLite = L.tileLayer("http://{s}.tile.stamen.com/toner-lite/{z}/{x}
   attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
 });
 
+var stamenWaterColor = L.tileLayer("http://{s}.tile.stamen.com/watercolor/{z}/{x}/{y}.jpg", {
+  minZoom: 0,
+  maxZoom: 18,
+  subdomains: ["a","b","c","d"],
+  attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.'
+});
 
 /* Overlay Layers */
 var highlight = L.geoJson(null);
@@ -161,6 +167,9 @@ var markerClusters = new L.MarkerClusterGroup({
   disableClusteringAtZoom: 16
 });
 
+
+
+/*Load data*/
 var openBeerMapLayer = L.geoJson(null);
 var openBeerMaps = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
@@ -181,7 +190,7 @@ var openBeerMaps = L.geoJson(null, {
       + "<tr><th>Nom</th><td>" + feature.properties.NAME + "</td></tr>"
       + "<tr><th>Type</th><td>" + feature.properties.TYPE + " - Brasse sur place : " + feature.properties.BREWER + "</td></tr>"
       + "<tr><th>Bières à la pression</th><td>" + feature.properties.BEERS + "</td></tr>"
-      + "<tr><th>OpenBeerMap</th><td><a class='url-break' href=http://www.openstreetmap.org/node/'" + feature.properties.OSM_ID + "' target='_blank'>Améliorer les informations</a></td></tr>"
+      + "<tr><th>OpenBeerMap</th><td><a class='url-break' href='http://www.openstreetmap.org/node/" + feature.properties.OSM_ID + "' target='_blank'>Améliorer les informations</a></td></tr>"
       + "<table>";
       layer.on({
         click: function (e) {
@@ -247,7 +256,7 @@ var events15 = L.geoJson(null, {
     }
   }
 });
-$.getJSON("data/DOITT_THEATER_01_13SEPT2010.geojson", function (data) {
+$.getJSON("data/ParisBeerWeek_evenements.geojson", function (data) {
   events15.addData(data);
   /*map.addLayer(event15Layer);*/
 });
@@ -271,11 +280,12 @@ var participants = L.geoJson(null, {
     if (feature.properties) {
       var content = "<table class='table table-striped table-bordered table-condensed'>"
       + "<tr><th>Nom</th><td>" + feature.properties.NAME + "</td></tr>"
+      + "<tr><th>Type</th><td>" + feature.properties.TYPE + "</td></tr>"
       + "<tr><th>Description</th><td>" + feature.properties.DESCR_FR + "</td></tr>"
       + "<tr><th>Coordonnées</th><td><a target='_blank' href='" + feature.properties.WEBSITE + "'><i class='fa fa-globe fa-3x'></i></a>\
-       <a target='_blank' href='" + feature.properties.PBW_2015_FR + "'><i class='fa fa-pinterest-p fa-3x'></i></a>\
-       <a target='_blank' href='" + feature.properties.FACEBOOK + "'><i class='fa fa-facebook-official fa-3x'></i></a>\
-       <a target='_blank' href='" + feature.properties.OSM + "'><i class='fa fa-map-marker fa-3x'></i></a> </td></tr>"
+       &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.PBW_2015_FR + "'><i class='fa fa-pinterest-p fa-3x'></i></a>\
+       &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.FACEBOOK + "'><i class='fa fa-facebook-official fa-3x'></i></a>\
+       &nbsp;&nbsp;<a target='_blank' href=" + feature.properties.OSM + "><i class='fa fa-map-marker fa-3x'></i></a> </td></tr>"
       + "<tr><td colspan='2'> <img id ='popupimg' src='" + feature.properties.THUMBNAIL + "'></td></tr>"
       + "<table>";
       layer.on({
@@ -375,6 +385,7 @@ attributionControl.onAdd = function (map) {
 };
 map.addControl(attributionControl);
 
+/* zoom control */
 var zoomControl = L.control.zoom({
   position: "bottomright"
 }).addTo(map);
@@ -385,7 +396,7 @@ var locateControl = L.control.locate({
   drawCircle: true,
   follow: true,
   setView: true,
-  keepCurrentZoomLevel: true,
+  keepCurrentZoomLevel: false,
   markerStyle: {
     weight: 1,
     opacity: 0.8,
@@ -396,14 +407,14 @@ var locateControl = L.control.locate({
     clickable: false
   },
   icon: "icon-direction",
-  metric: false,
+  metric: true,
   strings: {
     title: "Ma position",
-    popup: "Vous etes dans un rayon de {distance} {unit} de ce point",
-    outsideMapBoundsMsg: "Vous semblez etre en dehors des limites de cette carte"
+    popup: "Vous êtes dans un rayon de {distance} {unit} de ce point",
+    outsideMapBoundsMsg: "Vous semblez être en dehors des limites de cette carte"
   },
   locateOptions: {
-    maxZoom: 18,
+    maxZoom: 15,
     watch: true,
     enableHighAccuracy: true,
     maximumAge: 10000,
@@ -420,26 +431,26 @@ if (document.body.clientWidth <= 767) {
 
 var baseLayers = {
   "Plan": mapquestOSM,
-  "Imagerie a&eacute;rienne": mapquestOAM,
-  "Imagerie et plan": mapquestHYB,
   "Pop art": popArt,
-  "Noir et blanc": stamenTonerLite
+  "Noir et blanc": stamenTonerLite,
+  "Aquarelle": stamenWaterColor,
+  "Imagerie a&eacute;rienne": mapquestOAM,
+  "Imagerie et plan": mapquestHYB
+
 };
 
 var groupedOverlays = {
-  "Points d'int&eacute;rêt": {
-    "<img src='assets/img/event15.png' width='24' height='28'>&nbsp;Evènement 2015": event15Layer,
-    "<img src='assets/img/participant.png' width='24' height='28'>&nbsp;Participants": participantLayer
+  "Paris Beer Week #2": {
+    "<img src='assets/img/participant.png' width='24' height='28'>&nbsp;Participants&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/participants/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#'' data-toggle='collapse' data-target='.navbar-collapse.in' id='about-btn' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": participantLayer,
+    "<img src='assets/img/event15.png' width='24' height='28'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='hhttp://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a title='Métadonnées' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-info-circle'></i></a>": event15Layer
+    
   },
-  "R&eacute;f&eacute;rence": {
-    "Open Beer Map": openBeerMapLayer
-/*    "Subway Lines": subwayLines*/
+  "OpenBeerMap": {
+    "&nbsp;Bars&nbsp;&&nbsp;pubs parisiens&nbsp;<a title='Site internet' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-globe'></i></a> - <a title='Métadonnées' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-info-circle'></i></a>": openBeerMapLayer
   }
 };
 
-var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {
-  collapsed: isCollapsed
-}).addTo(map);
+var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {collapsed: isCollapsed}).addTo(map);
 
 /* Highlight search box text on click */
 $("#searchbox").click(function () {
@@ -467,7 +478,7 @@ $(document).one("ajaxStop", function () {
   featureList.sort("feature-name", {order:"asc"});
 
   var openBeerMapBH = new Bloodhound({
-    name: "Boroughs",
+    name: "Bars",
     datumTokenizer: function (d) {
       return Bloodhound.tokenizers.whitespace(d.name);
     },
@@ -477,7 +488,7 @@ $(document).one("ajaxStop", function () {
   });
 
   var event15BH = new Bloodhound({
-    name: "Ev&eacute;nements 2015",
+    name: "Evenements",
     datumTokenizer: function (d) {
       return Bloodhound.tokenizers.whitespace(d.name);
     },
@@ -567,7 +578,7 @@ $(document).one("ajaxStop", function () {
       header: "<h4 class='typeahead-header'><img src='assets/img/globe.png' width='25' height='25'>&nbsp;GeoNames</h4>"
     }
   }).on("typeahead:selected", function (obj, datum) {
-    if (datum.source === "Ev&eacute;nements 2015") {
+    if (datum.source === "Evenements") {
       if (!map.hasLayer(event15Layer)) {
         map.addLayer(event15Layer);
       }
@@ -579,6 +590,15 @@ $(document).one("ajaxStop", function () {
     if (datum.source === "Participants") {
       if (!map.hasLayer(participantLayer)) {
         map.addLayer(participantLayer);
+      }
+      map.setView([datum.lat, datum.lng], 17);
+      if (map._layers[datum.id]) {
+        map._layers[datum.id].fire("click");
+      }
+    }
+    if (datum.source === "Bars") {
+      if (!map.hasLayer(openBeerMapLayer)) {
+        map.addLayer(openBeerMapLayer);
       }
       map.setView([datum.lat, datum.lng], 17);
       if (map._layers[datum.id]) {
