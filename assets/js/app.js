@@ -61,6 +61,16 @@ $("#sidebar-hide-btn").click(function() {
   map.invalidateSize();
 });
 
+
+$('#metadataModal').on('show.bs.modal', function (event) {
+  var button = $(event.relatedTarget); // Button that triggered the modal
+  var url = button.data('url'); // Extract info from data-* attributes
+  var modal = $(this);
+  modal.find('.modal-body iframe').attr("src", url);
+});
+
+
+/* FONCTIONS */
 function sizeLayerControl() {
   $(".leaflet-control-layers").css("max-height", $("#map").height() - 50);
 }
@@ -87,7 +97,7 @@ function syncSidebar() {
   events15.eachLayer(function (layer) {
     if (map.hasLayer(event15Layer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/event15.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><i class="fa fa-calendar"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
@@ -96,7 +106,7 @@ function syncSidebar() {
   participants.eachLayer(function (layer) {
     if (map.hasLayer(participantLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/participant.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><i class="fa fa-users"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
@@ -168,18 +178,31 @@ var markerClusters = new L.MarkerClusterGroup({
 });
 
 
+// marqueurs personnalisés via Font Awesome
+var participantMarker = L.AwesomeMarkers.icon({
+  icon: 'users',
+  markerColor: 'blue',
+  prefix: 'fa'
+});
+
+var eventMarker = L.AwesomeMarkers.icon({
+  icon: 'calendar',
+  markerColor: 'orange',
+  prefix: 'fa'
+});
+
+var beerMarker = L.AwesomeMarkers.icon({
+  icon: 'beer',
+  markerColor: 'green',
+  prefix: 'fa'
+});
+
 
 /*Load data*/
 var openBeerMapLayer = L.geoJson(null);
 var openBeerMaps = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
-    return L.marker(latlng, {
-      icon: L.icon({
-        iconUrl: "assets/img/event15.png",
-        iconSize: [24, 28],
-        iconAnchor: [12, 28],
-        popupAnchor: [0, -25]
-      }),
+    return L.marker(latlng, {icon: beerMarker,
       title: feature.properties.NAME,
       riseOnHover: false
     });
@@ -222,13 +245,7 @@ $.getJSON("data/OpenBeerMap_IDF.geojson", function (data) {
 var event15Layer = L.geoJson(null);
 var events15 = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
-    return L.marker(latlng, {
-      icon: L.icon({
-        iconUrl: "assets/img/event15.png",
-        iconSize: [24, 28],
-        iconAnchor: [12, 28],
-        popupAnchor: [0, -25]
-      }),
+    return L.marker(latlng, {icon: eventMarker,
       title: feature.properties.NAME,
       riseOnHover: true
     });
@@ -265,13 +282,7 @@ $.getJSON("data/ParisBeerWeek_evenements.geojson", function (data) {
 var participantLayer = L.geoJson(null);
 var participants = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
-    return L.marker(latlng, {
-      icon: L.icon({
-        iconUrl: "assets/img/participant.png",
-        iconSize: [24, 28],
-        iconAnchor: [12, 28],
-        popupAnchor: [0, -25]
-      }),
+    return L.marker(latlng, {icon: participantMarker,
       title: feature.properties.NAME,
       riseOnHover: true
     });
@@ -441,12 +452,12 @@ var baseLayers = {
 
 var groupedOverlays = {
   "Paris Beer Week #2": {
-    "<img src='assets/img/participant.png' width='24' height='28'>&nbsp;Participants&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/participants/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#'' data-toggle='collapse' data-target='.navbar-collapse.in' id='about-btn' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": participantLayer,
-    "<img src='assets/img/event15.png' width='24' height='28'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='hhttp://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a title='Métadonnées' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-info-circle'></i></a>": event15Layer
+    "<i class='fa fa-users'></i>&nbsp;Participants&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/participants/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/92115642a6234bf2a3379b9be9bedd83?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": participantLayer,
+    "<i class='fa fa-calendar orange'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='hhttp://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/cc9d1de9f1164159bea1465ef9826eb0?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": event15Layer
     
   },
   "OpenBeerMap": {
-    "&nbsp;Bars&nbsp;&&nbsp;pubs parisiens&nbsp;<a title='Site internet' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-globe'></i></a> - <a title='Métadonnées' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-info-circle'></i></a>": openBeerMapLayer
+    "<i class='fa fa-beer green'>&nbsp;Bars&nbsp;&&nbsp;pubs parisiens&nbsp;<a title='Site internet' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/eeeb7a31c27145e2a3c0f08415f38aed?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": openBeerMapLayer
   }
 };
 
@@ -552,14 +563,15 @@ $(document).one("ajaxStop", function () {
     displayKey: "name",
     source: openBeerMapBH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'>Bars</h4>"
+      header: "<h4 class='typeahead-header'><i class='fa fa-beer'>Bars</h4>",
+      suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
     }
   }, {
     name: "Evenements",
     displayKey: "name",
     source: event15BH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'><img src='assets/img/event15.png' width='24' height='28'>&nbsp;Ev&eacute;nements 2015</h4>",
+      header: "<h4 class='typeahead-header'><i class='fa fa-calendar'>&nbsp;Ev&eacute;nements 2015</h4>",
       suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
     }
   }, {
@@ -567,7 +579,7 @@ $(document).one("ajaxStop", function () {
     displayKey: "name",
     source: participantsBH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'><img src='assets/img/participant.png' width='24' height='28'>&nbsp;Participants</h4>",
+      header: "<h4 class='typeahead-header'><i class='fa fa-users'>&nbsp;Participants</h4>",
       suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
     }
   }, {
@@ -575,7 +587,7 @@ $(document).one("ajaxStop", function () {
     displayKey: "name",
     source: geonamesBH.ttAdapter(),
     templates: {
-      header: "<h4 class='typeahead-header'><img src='assets/img/globe.png' width='25' height='25'>&nbsp;GeoNames</h4>"
+      header: "<h4 class='typeahead-header'><i class='fa fa-globe'>&nbsp;GeoNames</h4>"
     }
   }).on("typeahead:selected", function (obj, datum) {
     if (datum.source === "Evenements") {
