@@ -252,7 +252,16 @@ var events15 = L.geoJson(null, {
   },
   onEachFeature: function (feature, layer) {
     if (feature.properties) {
-      var content = "<table class='table table-striped table-bordered table-condensed'>" + "<tr><th>Name</th><td>" + feature.properties.NAME + "</td></tr>" + "<tr><th>Phone</th><td>" + feature.properties.TEL + "</td></tr>" + "<tr><th>Address</th><td>" + feature.properties.ADDRESS1 + "</td></tr>" + "<tr><th>Website</th><td><a class='url-break' href='" + feature.properties.URL + "' target='_blank'>" + feature.properties.URL + "</a></td></tr>" + "<tr><th>Fiche sur PBW 2015</th><td><a class='url-break' href='" + feature.properties.ed15_URL_FR + "' target='_blank'>" + feature.properties.ed15_URL_FR + "</a></td></tr>" + "<table>";
+      var content = "<table class='table table-striped table-bordered table-condensed'>"
+      + "<tr><th>Nom</th><td>" + feature.properties.NAME + "</td></tr>"
+      + "<tr><th>Type</th><td>" + feature.properties.TYPE + "</td></tr>"
+      + "<tr><th>Description</th><td>" + feature.properties.DESCR_FR + "</td></tr>"
+      + "<tr><th>Coordonnées</th><td><a target='_blank' href='" + feature.properties.WEBSITE + "'><i class='fa fa-globe fa-3x'></i></a>\
+       &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.PBW_2015_FR + "'><i class='fa fa-pinterest-p fa-3x'></i></a>\
+       &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.FACEBOOK + "'><i class='fa fa-facebook-official fa-3x'></i></a>\
+       &nbsp;&nbsp;<a target='_blank' href=" + feature.properties.OSM + "><i class='fa fa-map-marker fa-3x'></i></a> </td></tr>"
+      + "<tr><td colspan='2'> <img id ='popupimg' src='" + feature.properties.THUMBNAIL + "'></td></tr>"
+      + "<table>";
       layer.on({
         click: function (e) {
           $("#feature-title").html(feature.properties.NAME);

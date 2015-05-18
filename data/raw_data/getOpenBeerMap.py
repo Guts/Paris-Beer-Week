@@ -135,7 +135,7 @@ for node in brasseries_art.nodes:
         obj = Feature(geometry=point,
                       id=x,
                       properties={"NAME": node.tags.get('name'),
-                                  "TYPE": 'Brasserie artisanale',
+                                  "TYPE": 'Brasserie',
                                   "BEERS": sorted(li_kindBeers),
                                   "BREWER": ownBrew,
                                   "OSM_ID": node.id
