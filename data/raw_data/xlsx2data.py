@@ -68,7 +68,9 @@ from geojson import dump, Feature, FeatureCollection, Point
 # 25        URL_THUMB
 # 26        x_longitude
 # 27        y_latitude
-# 28        LI_ID_EVT
+# 28        X_NOMINATIM
+# 29        Y_NOMINATIM
+# 30        LI_ID_EVT
 
 # /Structure attendue ##################################
 
@@ -77,10 +79,11 @@ li_objs = []
 
 # ouverture du fichier des participants en lecture
 wb = load_workbook(filename='ParisBeerWeek_participants.xlsx',
-                   read_only=True,
+                   # read_only=True,
                    guess_types=True,
                    data_only=True,
-                   use_iterators=True)
+                   # use_iterators=True
+                   )
 
 # noms des onglets
 # print(wb.get_sheet_names())
@@ -95,8 +98,24 @@ print(column_count)
 
 
 for row in ws.iter_rows(row_offset=1):
-    # extraire l'adresse
+    # extraire le nom
     nom = row[1].value
+
+    # vérification qu'il s'agit bien d'une ligne remplie
+    if not nom:
+        print('\nFin du tableau')
+        break
+    else:
+        pass
+
+    # si l'adresse n'est pas renseignée, on s'arrache
+    if not row[8].value and not row[11].value:
+        print('\nAdresse NR')
+        continue
+    else:
+        pass
+
+    # extraire l'adresse
     libelle = str(row[6].value) + " " + row[8].value + " " + row[9].value
     ville = row[11].value
     addr = nom + ", " + ville + ", France"
@@ -163,13 +182,19 @@ for row in ws.iter_rows(row_offset=1):
                               })
     li_objs.append(obj)
 
+    # adding the coordinates obtained into the file
+    row[28].value = location.longitude
+    row[29].value = location.latitude
 
 # sérialisation en GeoJSON
 featColl = FeatureCollection(li_objs)
 with open("../ParisBeerWeek_participants.geojson", "w") as outfile:
     dump(featColl, outfile, sort_keys=True)
 
-############################### EVENEMENTS 
+# ajout des coordonnées calculées par Nominatim
+wb.save('ParisBeerWeek_participants.xlsx')
+
+############################### EVENEMENTS
 
 # Structure attendue ##################################
 # col_idx   col_name        description
