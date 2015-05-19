@@ -221,6 +221,7 @@ column_count = ws.get_highest_column() + 1
 print(row_count)
 print(column_count)
 
+x = 1
 
 for row in ws.iter_rows(row_offset=1):
     # extraire l'adresse
@@ -242,14 +243,9 @@ for row in ws.iter_rows(row_offset=1):
 
     # extraire l'adresse
     if row[13].value:
-        ville = row[13].value
-        addr = nom + ", " + ville + ", France"
-        addr2 = row[15].value
-        addr3 = nom + ", France"
+        addr = nom + ", " + row[15].value
     else:
         addr = nom + ", Île-de-France, France"
-        addr2 = nom + ", France"
-        addr3 = nom + ", France"
 
     # date et horaires de l'événement
     paris_tz = pytz.timezone("Europe/Paris")  # fuseau horaire parisien
@@ -261,6 +257,8 @@ for row in ws.iter_rows(row_offset=1):
     evt_start_input = paris_tz.localize(evt_start_input)
     evt_start_epc = timegm(evt_start_input.timetuple())
     evt_start_txt = evt_start_input.strftime('%A %d %B %Y à %H:%M'.encode('UTF-8'))
+    evt_day_txt = evt_start_input.strftime('%A %d %B %Y'.encode('UTF-8'))
+    evt_start_time_txt = evt_start_input.strftime('%H:%M'.encode('UTF-8'))
     startDate = evt_start_input.strftime('%d/%m/%Y %H:%M'.encode('UTF-8'))
 
     # date et heure de fin
@@ -268,6 +266,7 @@ for row in ws.iter_rows(row_offset=1):
     evt_end_input = paris_tz.localize(evt_end_input)
     evt_end_epc = timegm(evt_end_input.timetuple())
     evt_end_txt = evt_end_input.strftime('%A %d %B %Y à %H:%M'.encode('UTF-8'))
+    evt_end_time_txt = evt_end_input.strftime('%H:%M'.encode('UTF-8'))
     endDate = evt_end_input.strftime('%d/%m/%Y %H:%M'.encode('UTF-8'))
 
     # extraction des coordonnées
@@ -277,7 +276,7 @@ for row in ws.iter_rows(row_offset=1):
     # stockage dans des objets en vue de la sérialisation
     point = Point((longitude, latitude))
     obj = Feature(geometry=point,
-                  id=row[0].value,
+                  id=x,
                   properties={"NAME": row[1].value,
                               "DESCR_FR": row[3].value,
                               "DESCR_EN": row[4].value,
@@ -285,16 +284,21 @@ for row in ws.iter_rows(row_offset=1):
                               "EVT_START_TXT": evt_start_txt,
                               "EVT_START_EPC": evt_start_epc,
                               "startDate": startDate,
+                              "EVT_START_TIME": evt_start_time_txt,
                               "EVT_END_TXT": evt_end_txt,
                               "EVT_END_EPC": evt_end_epc,
                               "endDate": endDate,
-                              "EVT_DUR_TXT": "row[23].value",
+                              "EVT_END_TIME": evt_end_time_txt,
+                              "EVT_DDAY": evt_day_txt,
                               "PBW_DAY_2015_FR": row[27].value,
                               "PBW_DAY_2015_EN": row[28].value,
                               "OSM": row[25].value,
                               "GMAPS": row[26].value
                               })
     li_objs.append(obj)
+
+    # increment ID
+    x += 1
 
 
 # sérialisation en GeoJSON
