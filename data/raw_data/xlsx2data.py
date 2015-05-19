@@ -26,8 +26,6 @@ import calendar
 
 # 3rd party libraries
 from openpyxl import load_workbook
-from geopy.geocoders import Nominatim
-from geopy.exc import GeocoderTimedOut
 from geojson import dump, Feature, FeatureCollection, Point
 
 # Custom modules
@@ -79,10 +77,10 @@ li_objs = []
 
 # ouverture du fichier des participants en lecture
 wb = load_workbook(filename='ParisBeerWeek_participants.xlsx',
-                   # read_only=True,
+                   read_only=True,
                    guess_types=True,
                    data_only=True,
-                   # use_iterators=True
+                   use_iterators=True
                    )
 
 # noms des onglets
@@ -96,7 +94,6 @@ column_count = ws.get_highest_column() + 1
 print(row_count)
 print(column_count)
 
-
 for row in ws.iter_rows(row_offset=1):
     # extraire le nom
     nom = row[1].value
@@ -109,59 +106,30 @@ for row in ws.iter_rows(row_offset=1):
         pass
 
     # si l'adresse n'est pas renseignée, on s'arrache
-    if not row[8].value and not row[11].value:
-        print('\nAdresse NR')
+    if not row[26].value and not row[27].value:
+        print('\nCoordonnates NR, use Geocoder before')
         continue
     else:
         pass
 
     # extraire l'adresse
-    libelle = str(row[6].value) + " " + row[8].value + " " + row[9].value
-    ville = row[11].value
-    addr = nom + ", " + ville + ", France"
-    addr2 = row[13].value
-    addr3 = nom + ", France"
+    # libelle = str(row[6].value) + " " + row[8].value + " " + row[9].value
+    # ville = row[11].value
+    # addr = nom + ", " + ville + ", France"
+    addr = row[13].value
 
-    # géocoder
-    geolocator = Nominatim(timeout=80)
-    try:
-        location = geolocator.geocode(addr)
-    except GeocoderTimedOut:
-        print('TimeOut: Try Again')
-        continue
+    # extraction des coordonnées
+    longitude = row[26].value
+    latitude = row[27].value
 
-    # tester si un résultat a été renvoyé et dégrader la précision
-    if not location:
-        addr = addr2
-        location = geolocator.geocode(addr)
-    else:
-        pass
-
-    # 2ème niveau de vérification
-    if not location:
-        addr = addr3
-        location = geolocator.geocode(addr)
-    else:
-        pass
-
-    # on print histoire de montrer ce que l'on a trouvé
-    try:
-        # print("adresse tentée : " + addr)
-        print(location.address)
-        print((location.latitude, location.longitude))
-    except UnicodeEncodeError:
-        # print(addr.encode("UTF-8"))
-        print(location.address.encode("utf8"))
-        print((location.latitude, location.longitude))
-
-    # extraction d'informations pour plus facilité
+    # extraction du téléphone
     if row[14].value:
         tel = row[14].value
     else:
         tel = "NR"
 
     # stockage dans des objets en vue de la sérialisation
-    point = Point((location.longitude, location.latitude))
+    point = Point((longitude, latitude))
     obj = Feature(geometry=point,
                   id=row[0].value,
                   properties={"ADR_COUNTRY": row[12].value,
@@ -182,17 +150,11 @@ for row in ws.iter_rows(row_offset=1):
                               })
     li_objs.append(obj)
 
-    # adding the coordinates obtained into the file
-    row[28].value = location.longitude
-    row[29].value = location.latitude
-
 # sérialisation en GeoJSON
 featColl = FeatureCollection(li_objs)
 with open("../ParisBeerWeek_participants.geojson", "w") as outfile:
     dump(featColl, outfile, sort_keys=True)
 
-# ajout des coordonnées calculées par Nominatim
-wb.save('ParisBeerWeek_participants.xlsx')
 
 ############################### EVENEMENTS
 
@@ -216,20 +178,23 @@ wb.save('ParisBeerWeek_participants.xlsx')
 # 15        ADR_CONCAT
 # 16        ADR_IMG
 # 17        DATE_INIT
-# 18        DDAY
+# 18        DDAY_START
 # 19        TIME_START
-# 20        TIME_END
-# 21        DTIME_START
-# 22        DTIME_END
-# 23        DUREE
-# 24        OSM_URL
-# 25        GMAPS_URL
-# 26        DDAY_URL_FR
-# 27        DDAY_URL_EN
-# 28        LI_ID_PART
-# 29        ED_YEAR
-# 30        X_LONGITUDE
-# 31        Y_LATITUDE
+# 20        DDAY_END
+# 21        TIME_END
+# 22        DTIME_START
+# 23        DTIME_END
+# 24        DUREE
+# 25        OSM_URL
+# 26        GMAPS_URL
+# 27        DDAY_URL_FR
+# 28        DDAY_URL_EN
+# 29        LI_ID_PART
+# 30        ED_YEAR
+# 31        X_LONGITUDE
+# 32        Y_LATITUDE
+# 33        X_NOMINATIM
+# 34        Y_NOMINATIM
 
 
 # liste pour stocker les objets
@@ -238,7 +203,7 @@ li_objs = []
 # ouverture du fichier des participants en lecture
 wb = load_workbook(filename='ParisBeerWeek_evenements.xlsx',
                    read_only=True,
-                   # guess_types=True,
+                   guess_types=True,
                    data_only=True,
                    use_iterators=True)
 
@@ -257,6 +222,22 @@ print(column_count)
 for row in ws.iter_rows(row_offset=1):
     # extraire l'adresse
     nom = row[6].value
+
+    # vérification qu'il s'agit bien d'une ligne remplie
+    if not nom:
+        print('\nFin du tableau')
+        break
+    else:
+        pass
+
+    # si l'adresse n'est pas renseignée, on s'arrache
+    if not row[31].value and not row[32].value:
+        print('\nCoordonnates NR, use Geocoder before')
+        continue
+    else:
+        pass
+
+    # extraire l'adresse
     if row[13].value:
         ville = row[13].value
         addr = nom + ", " + ville + ", France"
@@ -266,40 +247,6 @@ for row in ws.iter_rows(row_offset=1):
         addr = nom + ", Île-de-France, France"
         addr2 = nom + ", France"
         addr3 = nom + ", France"
-
-    # géocoder
-    geolocator = Nominatim(timeout=80)
-    try:
-        location = geolocator.geocode(addr)
-    except GeocoderTimedOut:
-        print('TimeOut: Try Again')
-        continue
-
-    # tester si un résultat a été renvoyé et dégrader la précision
-    if not location:
-        addr = addr2
-        location = geolocator.geocode(addr)
-    else:
-        pass
-
-    # 2ème niveau de vérification
-    if not location:
-        addr = addr3
-        location = geolocator.geocode(addr)
-    else:
-        pass
-
-    # 3ème niveau de vérification
-    if not location:
-        print('Not found: ' + addr)
-
-    # on print histoire de montrer ce que l'on a trouvé
-    try:
-        print(location.address)
-        print((location.latitude, location.longitude))
-    except UnicodeEncodeError:
-        print(location.address.encode("utf8"))
-        print((location.latitude, location.longitude))
 
     # date et horaires de l'événement
     # 18        DDAY
@@ -313,13 +260,15 @@ for row in ws.iter_rows(row_offset=1):
     # else:
     #     tel = "NR"
     evt_start = row[21].value
-    print(type(evt_start))
-    print(evt_start.year)
+    # print(type(evt_start))
+    # print(evt_start.year)
 
-
+    # extraction des coordonnées
+    longitude = row[31].value
+    latitude = row[32].value
 
     # stockage dans des objets en vue de la sérialisation
-    point = Point((location.longitude, location.latitude))
+    point = Point((longitude, latitude))
     obj = Feature(geometry=point,
                   id=row[0].value,
                   properties={"ADR_COUNTRY": row[12].value,
