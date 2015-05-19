@@ -284,7 +284,7 @@ var events15 = L.geoJson(null, {
 });
 $.getJSON("data/ParisBeerWeek_evenements.geojson", function (data) {
   events15.addData(data);
-  /*map.addLayer(event15Layer);*/
+  map.addLayer(event15Layer);
 });
 
 /* Empty layer placeholder to add to layer control for listening when to add/remove participants to markerClusters layer */
@@ -341,7 +341,6 @@ map = L.map("map", {
   zoomControl: false,
   attributionControl: false
 });
-
 
 /* Layer control listeners that allow for a single markerClusters layer */
 map.on("overlayadd", function(e) {
@@ -410,6 +409,7 @@ var zoomControl = L.control.zoom({
   position: "bottomright"
 }).addTo(map);
 
+
 /* GPS enabled geolocation control set to follow the user's location */
 var locateControl = L.control.locate({
   position: "bottomright",
@@ -471,6 +471,14 @@ var groupedOverlays = {
 };
 
 var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {collapsed: isCollapsed}).addTo(map);
+
+/* slider temps */
+var sliderControl = L.control.sliderControl({
+  position: "bottomleft",
+  layer: event15Layer,
+}).addTo(map);
+
+/*map.addControl(sliderControl);*/
 
 /* Highlight search box text on click */
 $("#searchbox").click(function () {

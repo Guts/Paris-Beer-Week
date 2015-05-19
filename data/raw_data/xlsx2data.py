@@ -19,14 +19,17 @@ from __future__ import (unicode_literals, print_function)
 ###################################
 
 # Standard library
-import datetime
-import calendar
+from calendar import timegm
+from datetime import datetime
+import locale
+from time import mktime
 
 # Python 3 backported
 
 # 3rd party libraries
 from openpyxl import load_workbook
 from geojson import dump, Feature, FeatureCollection, Point
+import pytz
 
 # Custom modules
 
@@ -107,7 +110,7 @@ for row in ws.iter_rows(row_offset=1):
 
     # si l'adresse n'est pas renseignée, on s'arrache
     if not row[26].value and not row[27].value:
-        print('\nCoordonnates NR, use Geocoder before')
+        print('\nCoordinates NR, use Geocoder before')
         continue
     else:
         pass
@@ -232,7 +235,7 @@ for row in ws.iter_rows(row_offset=1):
 
     # si l'adresse n'est pas renseignée, on s'arrache
     if not row[31].value and not row[32].value:
-        print('\nCoordonnates NR, use Geocoder before')
+        print('\nCoordinates NR, use Geocoder before')
         continue
     else:
         pass
@@ -249,19 +252,23 @@ for row in ws.iter_rows(row_offset=1):
         addr3 = nom + ", France"
 
     # date et horaires de l'événement
-    # 18        DDAY
-# 19        TIME_START
-# 20        TIME_END
-# 21        DTIME_START
-# 22        DTIME_END
-# 23        DUREE
-    # if row[18].value:
-    #     tel = row[14].value
-    # else:
-    #     tel = "NR"
-    evt_start = row[21].value
-    # print(type(evt_start))
-    # print(evt_start.year)
+    paris_tz = pytz.timezone("Europe/Paris")  # fuseau horaire parisien
+
+    locale.setlocale(locale.LC_ALL, '')
+
+    # date et heure de début
+    evt_start_input = datetime.strptime(row[22].value, "%d/%m/%Y %H:%M:%S")
+    evt_start_input = paris_tz.localize(evt_start_input)
+    evt_start_epc = timegm(evt_start_input.timetuple())
+    evt_start_txt = evt_start_input.strftime('%A %d %B %Y à %H:%M'.encode('UTF-8'))
+    startDate = evt_start_input.strftime('%d/%m/%Y %H:%M'.encode('UTF-8'))
+
+    # date et heure de fin
+    evt_end_input = datetime.strptime(row[23].value, "%d/%m/%Y %H:%M:%S")
+    evt_end_input = paris_tz.localize(evt_end_input)
+    evt_end_epc = timegm(evt_end_input.timetuple())
+    evt_end_txt = evt_end_input.strftime('%A %d %B %Y à %H:%M'.encode('UTF-8'))
+    endDate = evt_end_input.strftime('%d/%m/%Y %H:%M'.encode('UTF-8'))
 
     # extraction des coordonnées
     longitude = row[31].value
@@ -271,18 +278,19 @@ for row in ws.iter_rows(row_offset=1):
     point = Point((longitude, latitude))
     obj = Feature(geometry=point,
                   id=row[0].value,
-                  properties={"ADR_COUNTRY": row[12].value,
-                              "NAME": row[1].value,
-                              "TYPE": row[2].value,
+                  properties={"NAME": row[1].value,
                               "DESCR_FR": row[3].value,
                               "DESCR_EN": row[4].value,
                               "ADDRESS": addr,
-                              "EVT_START": "row[21].value",
-                              "EVT_END": "row[22].value",
-                              "EVT_DUR": "row[23].value",
+                              "EVT_START_TXT": evt_start_txt,
+                              "EVT_START_EPC": evt_start_epc,
+                              "startDate": startDate,
+                              "EVT_END_TXT": evt_end_txt,
+                              "EVT_END_EPC": evt_end_epc,
+                              "endDate": endDate,
+                              "EVT_DUR_TXT": "row[23].value",
                               "PBW_DAY_2015_FR": row[27].value,
                               "PBW_DAY_2015_EN": row[28].value,
-                              "THUMBNAIL": row[16].value,
                               "OSM": row[25].value,
                               "GMAPS": row[26].value
                               })
