@@ -454,8 +454,8 @@ var baseLayers = {
   "Pop art": popArt,
   "Noir et blanc": stamenTonerLite,
   "Aquarelle": stamenWaterColor,
-  "Imagerie a&eacute;rienne": mapquestOAM,
-  "Imagerie et plan": mapquestHYB
+/*  "Imagerie a&eacute;rienne": mapquestOAM,
+  "Imagerie et plan": mapquestHYB*/
 
 };
 
