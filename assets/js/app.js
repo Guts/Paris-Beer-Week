@@ -254,13 +254,9 @@ var events15 = L.geoJson(null, {
     if (feature.properties) {
       var content = "<table class='table table-striped table-bordered table-condensed'>"
       + "<tr><th>Nom</th><td>" + feature.properties.NAME + "</td></tr>"
-      + "<tr><th>Type</th><td>" + feature.properties.TYPE + "</td></tr>"
       + "<tr><th>Description</th><td>" + feature.properties.DESCR_FR + "</td></tr>"
-      + "<tr><th>Coordonnées</th><td><a target='_blank' href='" + feature.properties.WEBSITE + "'><i class='fa fa-globe fa-3x'></i></a>\
-       &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.PBW_2015_FR + "'><i class='fa fa-pinterest-p fa-3x'></i></a>\
-       &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.FACEBOOK + "'><i class='fa fa-facebook-official fa-3x'></i></a>\
-       &nbsp;&nbsp;<a target='_blank' href=" + feature.properties.OSM + "><i class='fa fa-map-marker fa-3x'></i></a> </td></tr>"
-      + "<tr><td colspan='2'> <img id ='popupimg' src='" + feature.properties.THUMBNAIL + "'></td></tr>"
+      + "<tr><th>Date et horaire</th><td><i class='fa fa-calendar fa-2x'></i> le " + feature.properties.EVT_DDAY + ", <i class='fa fa-clock-o fa-2x'></i> de " + feature.properties.EVT_START_TIME + " à " + feature.properties.EVT_END_TIME + "</td></tr>"
+      + "<tr><th>Où</th><td>"+ feature.properties.ADDRESS + "</td></tr>"
       + "<table>";
       layer.on({
         click: function (e) {
@@ -462,7 +458,7 @@ var baseLayers = {
 var groupedOverlays = {
   "Paris Beer Week #2": {
     "<i class='fa fa-users'></i>&nbsp;Participants&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/participants/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/92115642a6234bf2a3379b9be9bedd83?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": participantLayer,
-    "<i class='fa fa-calendar orange'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='hhttp://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/cc9d1de9f1164159bea1465ef9826eb0?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": event15Layer
+    "<i class='fa fa-calendar orange'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/cc9d1de9f1164159bea1465ef9826eb0?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": event15Layer
     
   },
   "OpenBeerMap": {
@@ -476,6 +472,7 @@ var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {collaps
 var sliderControl = L.control.sliderControl({
   position: "bottomleft",
   layer: event15Layer,
+  range: true,
 }).addTo(map);
 
 /*map.addControl(sliderControl);*/
