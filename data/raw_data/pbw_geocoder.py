@@ -19,8 +19,6 @@ from __future__ import (unicode_literals, print_function)
 ###################################
 
 # Standard library
-import datetime
-import calendar
 
 # Python 3 backported
 
@@ -28,7 +26,6 @@ import calendar
 from openpyxl import load_workbook
 from geopy.geocoders import Nominatim
 from geopy.exc import GeocoderTimedOut
-from geojson import dump, Feature, FeatureCollection, Point
 
 # Custom modules
 
@@ -106,13 +103,13 @@ for row in ws.iter_rows(row_offset=1):
 
     # si l'adresse n'est pas renseignée, on s'arrache
     if not row[8].value and not row[11].value:
-        print('\nAdresse NR')
+        print('\nAdresse NR' + str(row[0].value))
         continue
     else:
         pass
 
     # extraire l'adresse
-    libelle = str(row[6].value) + " " + row[8].value + " " + row[9].value
+    # libelle = str(row[6].value) + " " + row[8].value + " " + row[9].value
     ville = row[11].value
     addr = nom + ", " + ville + ", France"
     addr2 = row[13].value
@@ -219,7 +216,7 @@ print(column_count)
 
 for row in ws.iter_rows(row_offset=1):
     # extraire le nom
-    nom = row[6].value
+    nom = row[1].value
 
     # vérification qu'il s'agit bien d'une ligne remplie
     if not nom:
