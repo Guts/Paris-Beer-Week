@@ -469,13 +469,17 @@ var groupedOverlays = {
 var layerControl = L.control.groupedLayers(baseLayers, groupedOverlays, {collapsed: isCollapsed}).addTo(map);
 
 /* slider temps */
-var sliderControl = L.control.sliderControl({
+/*var sliderControl = L.control.sliderControl({
   position: "bottomleft",
   layer: event15Layer,
-  range: true,
+  timeAttribute: 'EVT_S_EPC',
+  isEpoch: true,
+  timeStrLength: 16,
 }).addTo(map);
 
-/*map.addControl(sliderControl);*/
+map.addControl(sliderControl);
+
+sliderControl.startSlider();*/
 
 /* Highlight search box text on click */
 $("#searchbox").click(function () {
