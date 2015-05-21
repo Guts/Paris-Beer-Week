@@ -234,7 +234,7 @@ for row in ws.iter_rows(row_offset=1):
         pass
 
     # si l'adresse n'est pas renseignée, on s'arrache
-    if not row[31].value and not row[32].value:
+    if not row[30].value and not row[31].value:
         print('\nCoordinates NR, use Geocoder before')
         continue
     else:
@@ -252,7 +252,11 @@ for row in ws.iter_rows(row_offset=1):
     locale.setlocale(locale.LC_ALL, '')
 
     # date et heure de début
-    evt_start_input = datetime.strptime(row[22].value, "%d/%m/%Y %H:%M:%S")
+    if type(row[21].value) is str:
+      evt_start_input = datetime.strptime(row[21].value, "%d/%m/%Y %H:%M:%S")
+    else:
+      evt_start_input = row[21].value
+      pass
     evt_start_input = paris_tz.localize(evt_start_input)
     evt_start_epc = timegm(evt_start_input.timetuple())
     evt_start_txt = evt_start_input.strftime('%A %d %B %Y à %H:%M'.encode('UTF-8'))
@@ -261,7 +265,11 @@ for row in ws.iter_rows(row_offset=1):
     startDate = evt_start_input.strftime('%d/%m/%Y %H:%M'.encode('UTF-8'))
 
     # date et heure de fin
-    evt_end_input = datetime.strptime(row[23].value, "%d/%m/%Y %H:%M:%S")
+    if type(row[22].value) is str:
+      evt_end_input = datetime.strptime(row[22].value, "%d/%m/%Y %H:%M:%S")
+    else:
+      evt_end_input = row[22].value
+      pass
     evt_end_input = paris_tz.localize(evt_end_input)
     evt_end_epc = timegm(evt_end_input.timetuple())
     evt_end_txt = evt_end_input.strftime('%A %d %B %Y à %H:%M'.encode('UTF-8'))
@@ -280,6 +288,7 @@ for row in ws.iter_rows(row_offset=1):
                               "DESCR_FR": row[3].value,
                               "DESCR_EN": row[4].value,
                               "ADDRESS": addr,
+                              "PLACE_NAME": nom,
                               "EVT_S_TXT": evt_start_txt,
                               "EVT_S_EPC": evt_start_epc,
                               "startDate": startDate,

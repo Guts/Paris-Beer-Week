@@ -213,7 +213,7 @@ var openBeerMaps = L.geoJson(null, {
       + "<tr><th>Nom</th><td>" + feature.properties.NAME + "</td></tr>"
       + "<tr><th>Type</th><td>" + feature.properties.TYPE + " - Brasse sur place : " + feature.properties.BREWER + "</td></tr>"
       + "<tr><th>Bières à la pression</th><td>" + feature.properties.BEERS + "</td></tr>"
-      + "<tr><th>OpenBeerMap</th><td><a class='url-break' href='http://www.openstreetmap.org/node/" + feature.properties.OSM_ID + "' target='_blank'>Améliorer les informations</a></td></tr>"
+      + "<tr><th>OpenBeerMap</th><td><a class='url-break' href='http://www.openstreetmap.org/node/" + feature.properties.OSM_ID + "' target='_blank'>Am&eacute;liorer les informations</a></td></tr>"
       + "<table>";
       layer.on({
         click: function (e) {
@@ -224,7 +224,7 @@ var openBeerMaps = L.geoJson(null, {
         }
       });
       $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/event15.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
-      event15Search.push({
+      openBeerMapSearch.push({
         name: layer.feature.properties.NAME,
         name: layer.feature.properties.BEERS,
         source: "Où boire de la bière ?",
@@ -246,7 +246,7 @@ var event15Layer = L.geoJson(null);
 var events15 = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
     return L.marker(latlng, {icon: eventMarker,
-      title: feature.properties.NAME,
+      title: feature.properties.NAME + "&nbsp;(" + feature.properties.PLACE_NAME + ")",
       riseOnHover: true
     });
   },
@@ -255,12 +255,12 @@ var events15 = L.geoJson(null, {
       var content = "<table class='table table-striped table-bordered table-condensed'>"
       + "<tr><th>Nom</th><td>" + feature.properties.NAME + "</td></tr>"
       + "<tr><th>Description</th><td>" + feature.properties.DESCR_FR + "</td></tr>"
-      + "<tr><th>Date et horaire</th><td><i class='fa fa-calendar fa-2x'></i> le " + feature.properties.EVT_DDAY + ", <i class='fa fa-clock-o fa-2x'></i> de " + feature.properties.EVT_START_TIME + " à " + feature.properties.EVT_END_TIME + "</td></tr>"
+      + "<tr><th>Date et horaire</th><td><i class='fa fa-calendar fa-2x'></i> le " + feature.properties.EVT_DDAY + ", <i class='fa fa-clock-o fa-2x'></i> de " + feature.properties.EVT_S_TIME + " à " + feature.properties.EVT_E_TIME + "</td></tr>"
       + "<tr><th>Où</th><td>"+ feature.properties.ADDRESS + "</td></tr>"
       + "<table>";
       layer.on({
         click: function (e) {
-          $("#feature-title").html(feature.properties.NAME);
+          $("#feature-title").html(feature.properties.NAME + "&nbsp;-&nbsp;" + feature.properties.PLACE_NAME);
           $("#feature-info").html(content);
           $("#featureModal").modal("show");
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
@@ -269,8 +269,8 @@ var events15 = L.geoJson(null, {
       $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/event15.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       event15Search.push({
         name: layer.feature.properties.NAME,
-        address: layer.feature.properties.ADDRESS1,
-        source: "Ev&eacute;nements 2015",
+        place_name: layer.feature.properties.PLACE_NAME,
+        source: "Evenements",
         id: L.stamp(layer),
         lat: layer.feature.geometry.coordinates[1],
         lng: layer.feature.geometry.coordinates[0]
@@ -298,7 +298,7 @@ var participants = L.geoJson(null, {
       + "<tr><th>Nom</th><td>" + feature.properties.NAME + "</td></tr>"
       + "<tr><th>Type</th><td>" + feature.properties.TYPE + "</td></tr>"
       + "<tr><th>Description</th><td>" + feature.properties.DESCR_FR + "</td></tr>"
-      + "<tr><th>Coordonnées</th><td><a target='_blank' href='" + feature.properties.WEBSITE + "'><i class='fa fa-globe fa-3x'></i></a>\
+      + "<tr><th>Coordonn&eacute;es</th><td><a target='_blank' href='" + feature.properties.WEBSITE + "'><i class='fa fa-globe fa-3x'></i></a>\
        &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.PBW_2015_FR + "'><i class='fa fa-pinterest-p fa-3x'></i></a>\
        &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.FACEBOOK + "'><i class='fa fa-facebook-official fa-3x'></i></a>\
        &nbsp;&nbsp;<a target='_blank' href=" + feature.properties.OSM + "><i class='fa fa-map-marker fa-3x'></i></a> </td></tr>"
@@ -395,7 +395,7 @@ var attributionControl = L.control({
 });
 attributionControl.onAdd = function (map) {
   var div = L.DomUtil.create("div", "leaflet-control-attribution");
-  div.innerHTML = "<span class='hidden-xs'>Modèle développé par <a target='_blank' href='http://bryanmcbride.com'>bryanmcbride.com</a> | Mis en forme par <a target='_blank' href='https://twitter.com/geojulien'>GeoJulien</a> pour <a target='_blank' href='http://www.isogeo.com'>Isogeo</a> et <a target='_blank' href='http://laparisbeerweek.com/'>Paris Beer Week</a> | </span><a href='#' onclick='$(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
+  div.innerHTML = "<span class='hidden-xs'>Modèle d&eacute;velopp&eacute; par <a target='_blank' href='http://bryanmcbride.com'>bryanmcbride.com</a> | Mis en forme par <a target='_blank' href='https://twitter.com/geojulien'>GeoJulien</a> pour <a target='_blank' href='http://www.isogeo.com'>Isogeo</a> et <a target='_blank' href='http://laparisbeerweek.com/'>Paris Beer Week</a> | </span><a href='#' onclick='$(\"#attributionModal\").modal(\"show\"); return false;'>Attribution</a>";
   return div;
 };
 map.addControl(attributionControl);
@@ -457,12 +457,12 @@ var baseLayers = {
 
 var groupedOverlays = {
   "Paris Beer Week #2": {
-    "<i class='fa fa-users'></i>&nbsp;Participants&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/participants/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/92115642a6234bf2a3379b9be9bedd83?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": participantLayer,
-    "<i class='fa fa-calendar orange'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/cc9d1de9f1164159bea1465ef9826eb0?lock' id='metadata-event' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": event15Layer
+    "<i class='fa fa-users'></i>&nbsp;Participants&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/participants/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/92115642a6234bf2a3379b9be9bedd83?lock' id='metadata-part' title='M&eacute;tadonn&eacute;es'><i class='fa fa-info-circle'></i></a>": participantLayer,
+    "<i class='fa fa-calendar orange'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/cc9d1de9f1164159bea1465ef9826eb0?lock' id='metadata-event' title='M&eacute;tadonn&eacute;es'><i class='fa fa-info-circle'></i></a>": event15Layer
     
   },
   "OpenBeerMap": {
-    "<i class='fa fa-beer green'>&nbsp;Bars&nbsp;&&nbsp;pubs parisiens&nbsp;<a title='Site internet' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/eeeb7a31c27145e2a3c0f08415f38aed?lock' id='metadata-obm' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": openBeerMapLayer
+    "<i class='fa fa-beer green'>&nbsp;Bars&nbsp;&&nbsp;pubs parisiens&nbsp;<a title='Site internet' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/eeeb7a31c27145e2a3c0f08415f38aed?lock' id='metadata-obm' title='M&eacute;tadonn&eacute;es'><i class='fa fa-info-circle'></i></a>": openBeerMapLayer
   }
 };
 
@@ -543,7 +543,7 @@ $(document).one("ajaxStop", function () {
       filter: function (data) {
         return $.map(data.geonames, function (result) {
           return {
-            name: result.name + ", " + result.adminCode1,
+            name: result.name,
             lat: result.lat,
             lng: result.lng,
             source: "GeoNames"
@@ -586,7 +586,7 @@ $(document).one("ajaxStop", function () {
     source: event15BH.ttAdapter(),
     templates: {
       header: "<h4 class='typeahead-header'><i class='fa fa-calendar'>&nbsp;Ev&eacute;nements 2015</h4>",
-      suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{address}}</small>"].join(""))
+      suggestion: Handlebars.compile(["{{name}}<br>&nbsp;<small>{{place_name}}</small>"].join(""))
     }
   }, {
     name: "Participants",
