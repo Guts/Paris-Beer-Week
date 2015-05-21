@@ -458,11 +458,11 @@ var baseLayers = {
 var groupedOverlays = {
   "Paris Beer Week #2": {
     "<i class='fa fa-users'></i>&nbsp;Participants&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/participants/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/92115642a6234bf2a3379b9be9bedd83?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": participantLayer,
-    "<i class='fa fa-calendar orange'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/cc9d1de9f1164159bea1465ef9826eb0?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": event15Layer
+    "<i class='fa fa-calendar orange'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/cc9d1de9f1164159bea1465ef9826eb0?lock' id='metadata-event' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": event15Layer
     
   },
   "OpenBeerMap": {
-    "<i class='fa fa-beer green'>&nbsp;Bars&nbsp;&&nbsp;pubs parisiens&nbsp;<a title='Site internet' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/eeeb7a31c27145e2a3c0f08415f38aed?lock' id='metadata-part' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": openBeerMapLayer
+    "<i class='fa fa-beer green'>&nbsp;Bars&nbsp;&&nbsp;pubs parisiens&nbsp;<a title='Site internet' target='_blank' href='http://nlehuby.drupalgardens.com/node/81'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/eeeb7a31c27145e2a3c0f08415f38aed?lock' id='metadata-obm' title='Métadonnées'><i class='fa fa-info-circle'></i></a>": openBeerMapLayer
   }
 };
 

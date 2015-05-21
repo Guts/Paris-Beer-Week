@@ -103,7 +103,7 @@ for row in ws.iter_rows(row_offset=1):
 
     # si l'adresse n'est pas renseignée, on s'arrache
     if not row[8].value and not row[11].value:
-        print('\nAdresse NR' + str(row[0].value))
+        print('\nAdresse NR: ' + str(row[0].value))
         continue
     else:
         pass
@@ -176,24 +176,23 @@ wb.save('ParisBeerWeek_participants.xlsx')
 # 14        ADR_COUNTRY
 # 15        ADR_CONCAT
 # 16        ADR_IMG
-# 17        DATE_INIT
-# 18        DDAY_START
-# 19        TIME_START
-# 20        DDAY_END
-# 21        TIME_END
-# 22        DTIME_START
-# 23        DTIME_END
-# 24        DUREE
-# 25        OSM_URL
-# 26        GMAPS_URL
-# 27        DDAY_URL_FR
-# 28        DDAY_URL_EN
-# 29        LI_ID_PART
-# 30        ED_YEAR
-# 31        X_LONGITUDE
-# 32        Y_LATITUDE
-# 33        X_NOMINATIM
-# 34        Y_NOMINATIM
+# 17        DDAY_START
+# 18        TIME_START
+# 19        DDAY_END
+# 20        TIME_END
+# 21        DTIME_START
+# 22        DTIME_END
+# 23        DUREE
+# 24        OSM_URL
+# 25        GMAPS_URL
+# 26        DDAY_URL_FR
+# 27        DDAY_URL_EN
+# 28        LI_ID_PART
+# 29        ED_YEAR
+# 30        X_LONGITUDE
+# 31        Y_LATITUDE
+# 32        X_NOMINATIM
+# 33        Y_NOMINATIM
 
 # ouverture du fichier des participants en lecture
 wb = load_workbook(filename='ParisBeerWeek_evenements.xlsx',
@@ -273,8 +272,8 @@ for row in ws.iter_rows(row_offset=1):
         print((location.latitude, location.longitude))
 
     # adding the coordinates obtained into the file
-    row[33].value = location.longitude
-    row[34].value = location.latitude
+    row[32].value = location.longitude
+    row[33].value = location.latitude
 
 # ajout des coordonnées calculées par Nominatim
 wb.save('ParisBeerWeek_evenements.xlsx')

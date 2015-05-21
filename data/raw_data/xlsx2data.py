@@ -145,8 +145,8 @@ for row in ws.iter_rows(row_offset=1):
                               "WEBSITE": row[5].value,
                               "FACEBOOK": row[22].value,
                               "TWITTER": row[23].value,
-                              "PBW_2015_FR": row[20].value,
-                              "PBW_2015_EN": row[21].value,
+                              "PBW_15_FR": row[20].value,
+                              "PBW_15_EN": row[21].value,
                               "THUMBNAIL": row[25].value,
                               "OSM": row[15].value,
                               "GMAPS": row[16].value
@@ -180,24 +180,23 @@ with open("../ParisBeerWeek_participants.geojson", "w") as outfile:
 # 14        ADR_COUNTRY
 # 15        ADR_CONCAT
 # 16        ADR_IMG
-# 17        DATE_INIT
-# 18        DDAY_START
-# 19        TIME_START
-# 20        DDAY_END
-# 21        TIME_END
-# 22        DTIME_START
-# 23        DTIME_END
-# 24        DUREE
-# 25        OSM_URL
-# 26        GMAPS_URL
-# 27        DDAY_URL_FR
-# 28        DDAY_URL_EN
-# 29        LI_ID_PART
-# 30        ED_YEAR
-# 31        X_LONGITUDE
-# 32        Y_LATITUDE
-# 33        X_NOMINATIM
-# 34        Y_NOMINATIM
+# 17        DDAY_START
+# 18        TIME_START
+# 19        DDAY_END
+# 20        TIME_END
+# 21        DTIME_START
+# 22        DTIME_END
+# 23        DUREE
+# 24        OSM_URL
+# 25        GMAPS_URL
+# 26        DDAY_URL_FR
+# 27        DDAY_URL_EN
+# 28        LI_ID_PART
+# 29        ED_YEAR
+# 30        X_LONGITUDE
+# 31        Y_LATITUDE
+# 32        X_NOMINATIM
+# 33        Y_NOMINATIM
 
 
 # liste pour stocker les objets
@@ -270,8 +269,8 @@ for row in ws.iter_rows(row_offset=1):
     endDate = evt_end_input.strftime('%d/%m/%Y %H:%M'.encode('UTF-8'))
 
     # extraction des coordonnées
-    longitude = row[31].value
-    latitude = row[32].value
+    longitude = row[30].value
+    latitude = row[31].value
 
     # stockage dans des objets en vue de la sérialisation
     point = Point((longitude, latitude))
@@ -281,19 +280,19 @@ for row in ws.iter_rows(row_offset=1):
                               "DESCR_FR": row[3].value,
                               "DESCR_EN": row[4].value,
                               "ADDRESS": addr,
-                              "EVT_START_TXT": evt_start_txt,
-                              "EVT_START_EPC": evt_start_epc,
+                              "EVT_S_TXT": evt_start_txt,
+                              "EVT_S_EPC": evt_start_epc,
                               "startDate": startDate,
-                              "EVT_START_TIME": evt_start_time_txt,
-                              "EVT_END_TXT": evt_end_txt,
-                              "EVT_END_EPC": evt_end_epc,
+                              "EVT_S_TIME": evt_start_time_txt,
+                              "EVT_E_TXT": evt_end_txt,
+                              "EVT_E_EPC": evt_end_epc,
                               "endDate": endDate,
-                              "EVT_END_TIME": evt_end_time_txt,
+                              "EVT_E_TIME": evt_end_time_txt,
                               "EVT_DDAY": evt_day_txt,
-                              "PBW_DAY_2015_FR": row[27].value,
-                              "PBW_DAY_2015_EN": row[28].value,
-                              "OSM": row[25].value,
-                              "GMAPS": row[26].value
+                              "URL_D15_FR": row[26].value,
+                              "URL_D15_EN": row[27].value,
+                              "OSM": row[28].value,
+                              "GMAPS": row[29].value
                               })
     li_objs.append(obj)
 
