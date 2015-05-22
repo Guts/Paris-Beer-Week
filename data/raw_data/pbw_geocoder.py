@@ -213,6 +213,8 @@ column_count = ws.get_highest_column() + 1
 print(row_count)
 print(column_count)
 
+dico_lieux = {}
+
 for row in ws.iter_rows(row_offset=1):
     # extraire le nom
     nom = row[1].value
@@ -224,12 +226,23 @@ for row in ws.iter_rows(row_offset=1):
     else:
         pass
 
+    # on stocke les coordonnées par lieu unique pour optimiser et éviter qu'un même lieu ait 2 coordonnées différentes
+    if row[5].value in dico_lieux:
+        print("\tAlready localized: " + str(row[0].value))
+        # on récupère les coordonnées préalablement enregistrées
+        row[32].value = dico_lieux.get(row[5].value)[0]
+        row[33].value = dico_lieux.get(row[5].value)[1]
+        continue
+    else:
+        pass
+
     if row[13].value:
         ville = row[13].value
         addr = nom + ", " + ville + ", France"
         addr2 = row[15].value
         addr3 = nom + ", France"
     else:
+        print(row[0].value)
         addr = nom + ", Île-de-France, France"
         addr2 = nom + ", France"
         addr3 = nom + ", France"
@@ -274,6 +287,12 @@ for row in ws.iter_rows(row_offset=1):
     # adding the coordinates obtained into the file
     row[32].value = location.longitude
     row[33].value = location.latitude
+
+    # on stocke les coordonnées par lieu unique pour optimiser et éviter qu'un même lieu ait 2 coordonnées différentes
+    if row[5].value not in dico_lieux:
+        dico_lieux[row[5].value] = (location.longitude, location.latitude)
+    else:
+        pass
 
 # ajout des coordonnées calculées par Nominatim
 wb.save('ParisBeerWeek_evenements.xlsx')
