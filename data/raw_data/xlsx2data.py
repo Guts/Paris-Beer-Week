@@ -110,7 +110,7 @@ for row in ws.iter_rows(row_offset=1):
 
     # si l'adresse n'est pas renseignée, on s'arrache
     if not row[26].value and not row[27].value:
-        print('\nCoordinates NR, use Geocoder before')
+        print('\nCoordinates NR, use Geocoder before: ' + str(row[0].value))
         continue
     else:
         pass
@@ -235,7 +235,7 @@ for row in ws.iter_rows(row_offset=1):
 
     # si l'adresse n'est pas renseignée, on s'arrache
     if not row[30].value and not row[31].value:
-        print('\nCoordinates NR, use Geocoder before')
+        print('\nCoordinates NR, use Geocoder before: ' + str(row[0].value))
         continue
     else:
         pass
@@ -300,8 +300,8 @@ for row in ws.iter_rows(row_offset=1):
                               "EVT_DDAY": evt_day_txt,
                               "URL_D15_FR": row[26].value,
                               "URL_D15_EN": row[27].value,
-                              "OSM": row[28].value,
-                              "GMAPS": row[29].value
+                              "OSM": row[24].value,
+                              "GMAPS": row[25].value
                               })
     li_objs.append(obj)
 
