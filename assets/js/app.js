@@ -127,22 +127,14 @@ var mapquestOSM = L.tileLayer("https://{s}.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}
   subdomains: ["otile1-s", "otile2-s", "otile3-s", "otile4-s"],
   attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a> <img src="https://developer.mapquest.com/content/osm/mq_logo.png">. Map data (c) <a href="http://www.openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors, CC-BY-SA.'
 });
-<<<<<<< HEAD
 
-var mapquestOAM = L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
-=======
 var mapquestOAM = L.tileLayer("https://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
->>>>>>> refs/remotes/bmcbride/master
   maxZoom: 18,
   subdomains: ["otile1-s", "otile2-s", "otile3-s", "otile4-s"],
   attribution: 'Tiles courtesy of <a href="http://www.mapquest.com/" target="_blank">MapQuest</a>. Portions Courtesy NASA/JPL-Caltech and U.S. Depart. of Agriculture, Farm Service Agency'
 });
-<<<<<<< HEAD
 
-var mapquestHYB = L.layerGroup([L.tileLayer("http://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
-=======
 var mapquestHYB = L.layerGroup([L.tileLayer("https://{s}.mqcdn.com/tiles/1.0.0/sat/{z}/{x}/{y}.jpg", {
->>>>>>> refs/remotes/bmcbride/master
   maxZoom: 18,
   subdomains: ["otile1-s", "otile2-s", "otile3-s", "otile4-s"]
 }), L.tileLayer("https://{s}.mqcdn.com/tiles/1.0.0/hyb/{z}/{x}/{y}.png", {
@@ -432,13 +424,8 @@ var locateControl = L.control.locate({
     weight: 1,
     clickable: false
   },
-<<<<<<< HEAD
-  icon: "icon-direction",
-  metric: true,
-=======
   icon: "fa fa-location-arrow",
-  metric: false,
->>>>>>> refs/remotes/bmcbride/master
+  metric: true,
   strings: {
     title: "Ma position",
     popup: "Vous êtes dans un rayon de {distance} {unit} de ce point",
