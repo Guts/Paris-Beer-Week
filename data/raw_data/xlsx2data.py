@@ -14,9 +14,9 @@ from __future__ import (unicode_literals, print_function)
 # Licence:      GPL 3
 # ------------------------------------------------------------------------------
 
-###############################################################################
-########### Libraries #############
-###################################
+# #############################################################################
+# ########## Libraries #############
+# ##################################
 
 # Standard library
 from calendar import timegm
@@ -33,11 +33,11 @@ import pytz
 
 # Custom modules
 
-###############################################################################
-########### Main program ##########
-###################################
+# #############################################################################
+# ######### Main program ##########
+# #################################
 
-# PARTICIPANTS
+# ############################# PARTICIPANTS
 
 # Structure attendue ##################################
 # col_idx   col_name        description
@@ -60,18 +60,24 @@ import pytz
 # 16        GMAPS_URL
 # 17        ed_01_2014
 # 18        ed_02_2015
-# 19        ed14_URL_FR
-# 20        ed15_URL_FR
-# 21        ed15_URL_EN
-# 22        URL_FB
-# 23        URL_TWITTER
-# 24        URL_GPLUS
-# 25        URL_THUMB
-# 26        x_longitude
-# 27        y_latitude
-# 28        X_NOMINATIM
-# 29        Y_NOMINATIM
-# 30        LI_ID_EVT
+# 19        ed_03_2016
+# 20        ed14_URL_FR
+# 21        ed15_URL_FR
+# 22        ed15_URL_EN
+# 23        ed16_URL_FR
+# 24        ed16_URL_EN
+# 25        URL_INSTA
+# 26        URL_FB
+# 27        URL_TWITTER
+# 28        URL_GPLUS
+# 29        URL_THUMB
+# 30        URL_MAIL
+# 31        x_longitude
+# 32        y_latitude
+# 33        X_NOMINATIM
+# 34        Y_NOMINATIM
+# 35        LI_ID_EVT
+# 36        URL_CITYMAPPER
 
 # /Structure attendue ##################################
 
@@ -122,8 +128,9 @@ for row in ws.iter_rows(row_offset=1):
     addr = row[13].value
 
     # extraction des coordonnées
-    longitude = row[26].value
-    latitude = row[27].value
+    print(row[31].value)
+    longitude = row[31].value
+    latitude = row[32].value
 
     # extraction du téléphone
     if row[14].value:
@@ -145,11 +152,12 @@ for row in ws.iter_rows(row_offset=1):
                               "WEBSITE": row[5].value,
                               "FACEBOOK": row[22].value,
                               "TWITTER": row[23].value,
-                              "PBW_15_FR": row[20].value,
-                              "PBW_15_EN": row[21].value,
+                              "PBW_16_FR": row[23].value,
+                              "PBW_16_EN": row[24].value,
                               "THUMBNAIL": row[25].value,
                               "OSM": row[15].value,
-                              "GMAPS": row[16].value
+                              "GMAPS": row[16].value,
+                              "CITYMAPPER": row[36].value
                               })
     li_objs.append(obj)
 
@@ -159,7 +167,7 @@ with open("../ParisBeerWeek_participants.geojson", "w") as outfile:
     dump(featColl, outfile, sort_keys=True)
 
 
-############################### EVENEMENTS
+# ############################## EVENEMENTS
 
 # Structure attendue ##################################
 # col_idx   col_name        description
@@ -253,10 +261,10 @@ for row in ws.iter_rows(row_offset=1):
 
     # date et heure de début
     if type(row[21].value) is str:
-      evt_start_input = datetime.strptime(row[21].value, "%d/%m/%Y %H:%M:%S")
+        evt_start_input = datetime.strptime(row[21].value, "%d/%m/%Y %H:%M:%S")
     else:
-      evt_start_input = row[21].value
-      pass
+        evt_start_input = row[21].value
+        pass
     evt_start_input = paris_tz.localize(evt_start_input)
     evt_start_epc = timegm(evt_start_input.timetuple())
     evt_start_txt = evt_start_input.strftime('%A %d %B %Y à %H:%M'.encode('UTF-8'))
@@ -266,10 +274,10 @@ for row in ws.iter_rows(row_offset=1):
 
     # date et heure de fin
     if type(row[22].value) is str:
-      evt_end_input = datetime.strptime(row[22].value, "%d/%m/%Y %H:%M:%S")
+        evt_end_input = datetime.strptime(row[22].value, "%d/%m/%Y %H:%M:%S")
     else:
-      evt_end_input = row[22].value
-      pass
+        evt_end_input = row[22].value
+        pass
     evt_end_input = paris_tz.localize(evt_end_input)
     evt_end_epc = timegm(evt_end_input.timetuple())
     evt_end_txt = evt_end_input.strftime('%A %d %B %Y à %H:%M'.encode('UTF-8'))
@@ -315,9 +323,9 @@ with open("../ParisBeerWeek_evenements.geojson", "w") as outfile:
     dump(featColl, outfile, sort_keys=True)
 
 
-###############################################################################
-###### Stand alone program ########
-###################################
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
 
 # if __name__ == '__main__':
 #     """ standalone execution """

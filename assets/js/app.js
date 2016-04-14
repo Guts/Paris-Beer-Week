@@ -303,7 +303,9 @@ var participants = L.geoJson(null, {
       + "<tr><th>Coordonn&eacute;es</th><td><a target='_blank' href='" + feature.properties.WEBSITE + "'><i class='fa fa-globe fa-3x'></i></a>\
        &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.PBW_2015_FR + "'><i class='fa fa-pinterest-p fa-3x'></i></a>\
        &nbsp;&nbsp;<a target='_blank' href='" + feature.properties.FACEBOOK + "'><i class='fa fa-facebook-official fa-3x'></i></a>\
-       &nbsp;&nbsp;<a target='_blank' href=" + feature.properties.OSM + "><i class='fa fa-map-marker fa-3x'></i></a> </td></tr>"
+       &nbsp;&nbsp;<a target='_blank' href=" + feature.properties.OSM + "><i class='fa fa-map-marker fa-3x'></i></a>\
+       &nbsp;&nbsp;<a target='_blank' href=" + feature.properties.CITYMAPPER + "><i class='fa fa-map-signs fa-3x'></i></a>\
+       </td></tr>"
       + "<tr><td colspan='2'> <img id ='popupimg' src='" + feature.properties.THUMBNAIL + "'></td></tr>"
       + "<table>";
       layer.on({

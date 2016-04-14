@@ -68,6 +68,7 @@ from geopy.exc import GeocoderTimedOut
 # 28        X_NOMINATIM
 # 29        Y_NOMINATIM
 # 30        LI_ID_EVT
+# 31        URL_CITYMAPPER
 
 # /Structure attendue ##################################
 
@@ -155,7 +156,7 @@ for row in ws.iter_rows(row_offset=1):
 # ajout des coordonnées calculées par Nominatim
 wb.save('ParisBeerWeek_participants.xlsx')
 
-############################### EVENEMENTS
+# ############################## EVENEMENTS
 
 # Structure attendue ##################################
 # col_idx   col_name        description
@@ -297,9 +298,9 @@ for row in ws.iter_rows(row_offset=1):
 # ajout des coordonnées calculées par Nominatim
 wb.save('ParisBeerWeek_evenements.xlsx')
 
-###############################################################################
-###### Stand alone program ########
-###################################
+# #############################################################################
+# ##### Stand alone program ########
+# ##################################
 
 # if __name__ == '__main__':
 #     """ standalone execution """
