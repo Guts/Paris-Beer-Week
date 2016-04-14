@@ -132,6 +132,12 @@ for row in ws.iter_rows(row_offset=1):
     longitude = row[31].value
     latitude = row[32].value
 
+    # 
+    if not longitude or not latitude:
+        continue
+    else:
+        pass
+
     # extraction du téléphone
     if row[14].value:
         tel = row[14].value
