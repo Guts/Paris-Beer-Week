@@ -285,6 +285,60 @@ $.getJSON("data/ParisBeerWeek_evenements.geojson", function (data) {
   map.addLayer(event15Layer);
 });
 
+var fsId = 'WAN1BD2P0XKNTBOU4VG3MD1EIM5RH1G3QNC05TIQRERULKSC';
+var fsSecret = 'VXGPDL3J1RWEEJI50PUQJLGPK5SVDN4PJAN3TF3IGAMRZG54';
+var utpId = '110BDCBFDDEE4BCBFC8A190A2CE246A08CF63D62';
+var utpSecret = 'F71C5E961F3592F503689ACE795CD786ED1ACCA5 ';
+
+var addFoursquareInfos = function(feature) {
+  $.get('https://api.foursquare.com/v2/venues/' + feature.properties.FS_ID + '?client_id=' + fsId + '&client_secret=' + fsSecret + '&v=20140806%20&m=foursquare')
+  .done(function(data) {
+    var venue = data.response.venue;
+    if (!venue) {
+      return;
+    }
+    var photos = venue.photos;
+    if (photos.count) {
+      var items = photos.groups[0].items;
+      var container = $('#venue-images .grid');
+      _.each(items, function(photo) {
+        var div = $('<div>').addClass('grid-item');
+        var img = $('<img>');
+        img.attr('src', photo.prefix + 'original' + photo.suffix);
+        div.append(img);
+        container.append(div);
+      });
+      setTimeout(function() {
+        container.masonry({
+          columnWidth: '.grid-sizer',
+          itemSelector: '.grid-item',
+          percentPosition: true,
+          gutter: 5
+        });
+      }, 1000);
+    }
+    var label = $('<span>')
+    .addClass('label label-primary')
+    .html(venue.stats.checkinsCount);
+    $('#venue-checkins').append(label);
+  });
+};
+
+var addUntappdInfos = function(feature) {
+  $.get('https://api.untappd.com/v4/venue/checkins/' + feature.properties.UTP_ID + '?client_id=' + utpId + '&client_secret=' + utpSecret)
+  .done(function(data) {
+    var response = data.response;
+    var checkins = response.checkins.items;
+    var eventCheckins = _.filter(checkins, function(checkin) {
+      return new Date(checkin.created_at) >= new Date(2016, 03, 15);
+    });
+    var label = $('<span>')
+    .addClass('label label-primary')
+    .html(eventCheckins.length);
+    $('#untappd-checkins').append(label);
+  });
+};
+
 /* Empty layer placeholder to add to layer control for listening when to add/remove participants to markerClusters layer */
 var participantLayer = L.geoJson(null);
 var participants = L.geoJson(null, {
@@ -306,13 +360,31 @@ var participants = L.geoJson(null, {
        &nbsp;&nbsp;<a target='_blank' href=" + feature.properties.OSM + "><i class='fa fa-map-marker fa-3x'></i></a>\
        &nbsp;&nbsp;<a target='_blank' href=" + feature.properties.CITYMAPPER + "><i class='fa fa-map-signs fa-3x'></i></a>\
        </td></tr>"
-      + "<tr><td colspan='2'> <img id ='popupimg' src='" + feature.properties.THUMBNAIL + "'></td></tr>"
-      + "<table>";
+      + "<tr><td colspan='2'> <img id ='popupimg' src='" + feature.properties.THUMBNAIL + "'></td></tr>";
+
+      if (feature.properties.UTP_ID) {
+        content += "<tr><td>Untappd <i class='fa fa-beers'></i></td><td id='untappd-checkins'></td></tr>";
+      }
+      if (feature.properties.FS_ID) {
+        content += "<tr><td>Checkins <i class='fa fa-foursquare'></i></td><td id='venue-checkins'></td></tr>" +
+                   "<tr><td colspan='2' id='venue-images'><div class='grid'><div class='grid-sizer'></div></div></td></tr>";
+      }
+      content += "<table>";
+
       layer.on({
         click: function (e) {
+
           $("#feature-title").html(feature.properties.NAME);
           $("#feature-info").html(content);
           $("#featureModal").modal("show");
+
+          if (feature.properties.FS_ID) {
+            addFoursquareInfos(feature);
+          }
+          if (feature.properties.UTP_ID) {
+            addUntappdInfos(feature);
+          }
+
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
       });

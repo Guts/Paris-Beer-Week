@@ -206,3 +206,18 @@ input[type="radio"], input[type="checkbox"] {
     font-size: 18px;
     margin-top: 10px;
 }
+
+#venue-images .grid-sizer,
+#venue-images .grid-item {
+  width: 49%;
+  margin-bottom: 5px;
+}
+#venue-images .grid-item img {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .modal-dialog {
+    width: 60%!important;
+  }
+}
