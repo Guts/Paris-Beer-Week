@@ -42,7 +42,7 @@ $("#login-btn").click(function() {
 });
 
 $("#list-btn").click(function() {
-  $('#sidebar').toggle();
+  $('#sidebar').toggleClass('slip');
   map.invalidateSize();
   return false;
 });
@@ -53,13 +53,13 @@ $("#nav-btn").click(function() {
 });
 
 $("#sidebar-toggle-btn").click(function() {
-  $("#sidebar").toggle();
+  $("#sidebar").toggleClass('slip');
   map.invalidateSize();
   return false;
 });
 
 $("#sidebar-hide-btn").click(function() {
-  $('#sidebar').hide();
+  $('#sidebar').addClass('slip');
   map.invalidateSize();
 });
 

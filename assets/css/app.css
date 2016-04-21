@@ -10,6 +10,94 @@ input[type="radio"], input[type="checkbox"] {
   margin: 0;
 }
 
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-track {
+    background-color: rgb(239,232,180);
+    border-left: 1px solid #ccc;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #aaa;
+}
+
+/*
+  Bootstrap override
+  so !important is important...
+ */
+button {
+  border-radius: 0!important;
+  border: none!important;
+  background-color: #60afb5!important;
+}
+.form-control {
+  border-radius: 0!important;
+  background-color: #EFE8B4!important;
+}
+.navbar {
+  background-color: #60afb5!important;
+  border: 0!important;
+}
+.navbar .navbar-brand {
+  width: 250px;
+  background-color: #C7B520!important;
+  color: #EFE8B4!important;
+}
+.navbar .nav a {
+  color: #EFE8B4!important;
+}
+.navbar .nav > li > a {
+  font-weight: bold!important;
+  padding-top: 8px!important;
+  padding-bottom: 8px!important;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid #60afb5;
+}
+.navbar .nav > li > a:hover {
+  border-bottom: 7px solid #225d69;
+}
+.navbar .nav > li.open > a {
+  color: #EFE8B4!important;
+  background-color: #225d69!important;
+  font-weight: bold!important;
+  border-top: 7px solid #225d69;
+  border-bottom: 7px solid #225d69;
+}
+.navbar .dropdown-menu {
+  background-color: #225d69!important;
+}
+.navbar .dropdown-menu a:hover{
+  background-color: #C7B520!important;
+}
+.blue {
+  color: #60afb5;
+}
+.leaflet-control-layers {
+  background-image: url('/assets/img/paper.jpg');
+}
+.feature-row {
+  color: #225d69;
+  background-color: #EFE8B4;
+}
+.feature-row:hover {
+  background-color: #f16f46!important;
+}
+#searchbox {
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+  width: 150px;
+}
+#searchbox:focus {
+  width: 450px;
+}
+
+
 #popupimg {
     width : 100%;
 }
@@ -18,10 +106,36 @@ input[type="radio"], input[type="checkbox"] {
   width: 250px;
   height: 100%;
   max-width: 100%;
-  float: left;
-  -webkit-transition: all 0.25s ease-out;
-    -moz-transition: all 0.25s ease-out;
-    transition: all 0.25s ease-out;
+  left: 0;
+  top: 50px;
+  padding-bottom: 50px;
+  position: absolute;
+  z-index: 150;
+  -webkit-transition: all .3s ease-in-out;
+  -moz-transition: all .3s ease-in-out;
+  -o-transition: all .3s ease-in-out;
+  transition: all .3s ease-in-out;
+  background-image: url('/assets/img/paper.jpg');
+  color: rgb(239,232,180);
+}
+#sidebar.slip {
+  left: -250px;
+}
+#sidebar div {
+  background: transparent;
+  border: none;
+}
+#sidebar .panel-title {
+  color: rgb(239,232,180);
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 20px;
+}
+#sidebar .panel-title i {
+  cursor: pointer
+}
+#sidebar .panel-title i:hover {
+  color: white;
 }
 #map {
   width: auto;
