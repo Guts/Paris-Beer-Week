@@ -37,6 +37,8 @@ import pytz
 # ######### Main program ##########
 # #################################
 
+edition = 2016
+
 # ############################# PARTICIPANTS
 
 # Structure attendue ##################################
@@ -85,7 +87,7 @@ import pytz
 li_objs = []
 
 # ouverture du fichier des participants en lecture
-wb = load_workbook(filename='ParisBeerWeek_participants.xlsx',
+wb = load_workbook(filename='ParisBeerWeek_participants_{}.xlsx'.format(edition),
                    read_only=True,
                    guess_types=True,
                    data_only=True,
@@ -97,8 +99,8 @@ wb = load_workbook(filename='ParisBeerWeek_participants.xlsx',
 
 ws = wb.worksheets[0]  # ws = première feuille
 
-row_count = ws.get_highest_row() - 1
-column_count = ws.get_highest_column() + 1
+row_count = ws.max_row
+column_count = ws.max_column
 
 print(row_count)
 print(column_count)
@@ -219,7 +221,7 @@ with open("../ParisBeerWeek_participants.geojson", "w") as outfile:
 li_objs = []
 
 # ouverture du fichier des participants en lecture
-wb = load_workbook(filename='ParisBeerWeek_evenements.xlsx',
+wb = load_workbook(filename='ParisBeerWeek_evenements_{}.xlsx'.format(edition),
                    read_only=True,
                    guess_types=True,
                    data_only=True,
