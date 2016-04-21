@@ -179,7 +179,37 @@ var markerClusters = new L.MarkerClusterGroup({
   disableClusteringAtZoom: 16
 });
 
-
+// marqueues personnalisés avec une image
+var breweryIcon = L.icon({
+  iconUrl: '/assets/img/icon_brewery.png',
+  shadowUrl: '/assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
+var barIcon = L.icon({
+  iconUrl: '/assets/img/icon_bar.png',
+  shadowUrl: '/assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
+var shopIcon = L.icon({
+  iconUrl: '/assets/img/icon_shop.png',
+  shadowUrl: '/assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
+var assoIcon = L.icon({
+  iconUrl: '/assets/img/icon_asso.png',
+  shadowUrl: '/assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
+var distIcon = L.icon({
+  iconUrl: '/assets/img/icon_dist.png',
+  shadowUrl: '/assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
 // marqueurs personnalisés via Font Awesome
 var participantMarker = L.AwesomeMarkers.icon({
   icon: 'users',
@@ -339,11 +369,21 @@ var addUntappdInfos = function(feature) {
   });
 };
 
+var iconFromType = {
+  BAR: barIcon,
+  CAVE: shopIcon,
+  BRASSERIE: breweryIcon,
+  DISTRIBUTEUR: distIcon,
+  ASSOCIATION: assoIcon
+};
+
 /* Empty layer placeholder to add to layer control for listening when to add/remove participants to markerClusters layer */
 var participantLayer = L.geoJson(null);
 var participants = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
-    return L.marker(latlng, {icon: participantMarker,
+    var icon = iconFromType[feature.properties.TYPE];
+    return L.marker(latlng, {
+      icon: icon,
       title: feature.properties.NAME,
       riseOnHover: true
     });
