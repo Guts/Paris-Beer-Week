@@ -377,6 +377,14 @@ var iconFromType = {
   ASSOCIATION: assoIcon
 };
 
+var imgFromType = {
+  BAR: '/assets/img/icon_bar.png',
+  CAVE: '/assets/img/icon_shop.png',
+  BRASSERIE: '/assets/img/icon_brewery.png',
+  DISTRIBUTEUR: '/assets/img/icon_dist.png',
+  ASSOCIATION: '/assets/img/icon_asso.png'
+}
+
 /* Empty layer placeholder to add to layer control for listening when to add/remove participants to markerClusters layer */
 var participantLayer = L.geoJson(null);
 var participants = L.geoJson(null, {
@@ -413,8 +421,9 @@ var participants = L.geoJson(null, {
 
       layer.on({
         click: function (e) {
-
-          $("#feature-title").html(feature.properties.NAME);
+          var title = $("#feature-title").empty();
+          $('<img>').attr('src', imgFromType[feature.properties.TYPE]).appendTo(title);
+          $('<span>').html(feature.properties.NAME).appendTo(title);
           $("#feature-info").html(content);
           $("#featureModal").modal("show");
 
