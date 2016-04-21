@@ -334,7 +334,7 @@ var addFoursquareInfos = function(feature) {
       _.each(items, function(photo) {
         var div = $('<div>').addClass('grid-item');
         var img = $('<img>');
-        img.attr('src', photo.prefix + 'original' + photo.suffix);
+        img.attr('src', photo.prefix + 'width250' + photo.suffix);
         div.append(img);
         container.append(div);
       });
@@ -360,7 +360,7 @@ var addUntappdInfos = function(feature) {
     var response = data.response;
     var checkins = response.checkins.items;
     var eventCheckins = _.filter(checkins, function(checkin) {
-      return new Date(checkin.created_at) >= new Date(2016, 03, 15);
+      return new Date(checkin.created_at) >= new Date(2016, 03, 29);
     });
     var label = $('<span>')
     .addClass('label label-primary')

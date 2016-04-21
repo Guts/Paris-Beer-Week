@@ -34,6 +34,8 @@ from geopy.exc import GeocoderTimedOut
 # ########## Main program ##########
 # ##################################
 
+edition = 2016
+
 # PARTICIPANTS
 
 # Structure attendue ##################################
@@ -81,7 +83,7 @@ from geopy.exc import GeocoderTimedOut
 # /Structure attendue ##################################
 
 # ouverture du fichier des participants en lecture
-wb = load_workbook(filename='ParisBeerWeek_participants.xlsx',
+wb = load_workbook(filename='ParisBeerWeek_participants_{}.xlsx'.format(edition),
                    # read_only=True,
                    guess_types=True,
                    data_only=True,
@@ -155,6 +157,9 @@ for row in ws.iter_rows(row_offset=1):
         # print(addr.encode("UTF-8"))
         print(location.address.encode("utf8"))
         print((location.latitude, location.longitude))
+    except AttributeError:
+        print("no address: " + nom)
+        continue
 
     # adding the coordinates obtained into the file
     row[33].value = location.longitude
@@ -162,7 +167,7 @@ for row in ws.iter_rows(row_offset=1):
 
 
 # ajout des coordonnées calculées par Nominatim
-wb.save('ParisBeerWeek_participants.xlsx')
+wb.save('ParisBeerWeek_participants_{}.xlsx'.format(edition))
 
 # ############################## EVENEMENTS
 
@@ -204,7 +209,7 @@ wb.save('ParisBeerWeek_participants.xlsx')
 # 33        Y_NOMINATIM
 
 # ouverture du fichier des participants en lecture
-wb = load_workbook(filename='ParisBeerWeek_evenements.xlsx',
+wb = load_workbook(filename='ParisBeerWeek_evenements_{}.xlsx'.format(edition),
                    # read_only=True,
                    guess_types=True,
                    data_only=True,
@@ -304,7 +309,7 @@ for row in ws.iter_rows(row_offset=1):
         pass
 
 # ajout des coordonnées calculées par Nominatim
-wb.save('ParisBeerWeek_evenements.xlsx')
+wb.save('ParisBeerWeek_evenements_{0}.xlsx'.format(edition))
 
 # #############################################################################
 # ##### Stand alone program ########
