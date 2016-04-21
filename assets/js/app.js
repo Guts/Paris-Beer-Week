@@ -334,7 +334,7 @@ var addFoursquareInfos = function(feature) {
       _.each(items, function(photo) {
         var div = $('<div>').addClass('grid-item');
         var img = $('<img>');
-        img.attr('src', photo.prefix + 'original' + photo.suffix);
+        img.attr('src', photo.prefix + 'width250' + photo.suffix);
         div.append(img);
         container.append(div);
       });
