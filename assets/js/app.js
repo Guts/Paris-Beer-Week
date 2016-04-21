@@ -181,32 +181,32 @@ var markerClusters = new L.MarkerClusterGroup({
 
 // marqueues personnalisés avec une image
 var breweryIcon = L.icon({
-  iconUrl: '/assets/img/icon_brewery.png',
-  shadowUrl: '/assets/img/icon_shadow.png',
+  iconUrl: 'assets/img/icon_brewery.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
   iconAnchor:   [30, 30],
   shadowAnchor: [17, 0]
 });
 var barIcon = L.icon({
-  iconUrl: '/assets/img/icon_bar.png',
-  shadowUrl: '/assets/img/icon_shadow.png',
+  iconUrl: 'assets/img/icon_bar.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
   iconAnchor:   [30, 30],
   shadowAnchor: [17, 0]
 });
 var shopIcon = L.icon({
-  iconUrl: '/assets/img/icon_shop.png',
-  shadowUrl: '/assets/img/icon_shadow.png',
+  iconUrl: 'assets/img/icon_shop.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
   iconAnchor:   [30, 30],
   shadowAnchor: [17, 0]
 });
 var assoIcon = L.icon({
-  iconUrl: '/assets/img/icon_asso.png',
-  shadowUrl: '/assets/img/icon_shadow.png',
+  iconUrl: 'assets/img/icon_asso.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
   iconAnchor:   [30, 30],
   shadowAnchor: [17, 0]
 });
 var distIcon = L.icon({
-  iconUrl: '/assets/img/icon_dist.png',
-  shadowUrl: '/assets/img/icon_shadow.png',
+  iconUrl: 'assets/img/icon_dist.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
   iconAnchor:   [30, 30],
   shadowAnchor: [17, 0]
 });
@@ -378,11 +378,11 @@ var iconFromType = {
 };
 
 var imgFromType = {
-  BAR: '/assets/img/icon_bar.png',
-  CAVE: '/assets/img/icon_shop.png',
-  BRASSERIE: '/assets/img/icon_brewery.png',
-  DISTRIBUTEUR: '/assets/img/icon_dist.png',
-  ASSOCIATION: '/assets/img/icon_asso.png'
+  BAR: 'assets/img/icon_bar.png',
+  CAVE: 'assets/img/icon_shop.png',
+  BRASSERIE: 'assets/img/icon_brewery.png',
+  DISTRIBUTEUR: 'assets/img/icon_dist.png',
+  ASSOCIATION: 'assets/img/icon_asso.png'
 };
 
 /* Empty layer placeholder to add to layer control for listening when to add/remove participants to markerClusters layer */
