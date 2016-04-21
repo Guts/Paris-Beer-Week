@@ -129,8 +129,8 @@ for row in ws.iter_rows(row_offset=1):
 
     # extraction des coordonnées
     print(row[31].value)
-    longitude = row[31].value
-    latitude = row[32].value
+    longitude = row[32].value
+    latitude = row[31].value
 
     # 
     if not longitude or not latitude:
@@ -160,7 +160,7 @@ for row in ws.iter_rows(row_offset=1):
                               "TWITTER": row[23].value,
                               "PBW_16_FR": row[23].value,
                               "PBW_16_EN": row[24].value,
-                              "THUMBNAIL": row[25].value,
+                              "THUMBNAIL": row[29].value,
                               "OSM": row[15].value,
                               "GMAPS": row[16].value,
                               "CITYMAPPER": row[36].value,
