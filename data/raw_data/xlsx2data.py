@@ -163,7 +163,9 @@ for row in ws.iter_rows(row_offset=1):
                               "THUMBNAIL": row[25].value,
                               "OSM": row[15].value,
                               "GMAPS": row[16].value,
-                              "CITYMAPPER": row[36].value
+                              "CITYMAPPER": row[36].value,
+                              "FS_ID": row[37].value,
+                              "UTP_ID": row[38].value
                               })
     li_objs.append(obj)
 
