@@ -77,7 +77,7 @@ button {
   color: #60afb5;
 }
 .leaflet-control-layers {
-  background-image: url('/assets/img/paper.jpg');
+  background-image: url('../img/paper.jpg');
 }
 .feature-row {
   color: #225d69;
@@ -149,7 +149,7 @@ button {
   -moz-transition: all .3s ease-in-out;
   -o-transition: all .3s ease-in-out;
   transition: all .3s ease-in-out;
-  background-image: url('/assets/img/paper.jpg');
+  background-image: url('../img/paper.jpg');
   color: rgb(239,232,180);
 }
 #sidebar.slip {
