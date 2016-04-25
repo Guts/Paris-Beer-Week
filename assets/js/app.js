@@ -312,7 +312,7 @@ var events15 = L.geoJson(null, {
 });
 $.getJSON("data/ParisBeerWeek_evenements.geojson", function (data) {
   events15.addData(data);
-  map.addLayer(event15Layer);
+  /*map.addLayer(event15Layer);*/
 });
 
 var fsId = 'WAN1BD2P0XKNTBOU4VG3MD1EIM5RH1G3QNC05TIQRERULKSC';
