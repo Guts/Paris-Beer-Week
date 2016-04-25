@@ -1,7 +1,8 @@
 # -*- coding: UTF-8 -*-
 #!/usr/bin/env python3.4
 from __future__ import (unicode_literals, print_function)
-# -----------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------
 # Name:         Parser Geocoder from Excel file
 # Purpose:      todo
 #
@@ -12,11 +13,11 @@ from __future__ import (unicode_literals, print_function)
 # Updated:      15/05/2015
 #
 # Licence:      GPL 3
-# ------------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 
-###############################################################################
-########### Libraries #############
-###################################
+# ############################################################################
+# ########## Libraries #############
+# ##################################
 
 # Standard library
 
@@ -29,9 +30,11 @@ from geopy.exc import GeocoderTimedOut
 
 # Custom modules
 
-###############################################################################
-########### Main program ##########
-###################################
+# ############################################################################
+# ########## Main program ##########
+# ##################################
+
+edition = 2016
 
 # PARTICIPANTS
 
@@ -56,24 +59,31 @@ from geopy.exc import GeocoderTimedOut
 # 16        GMAPS_URL
 # 17        ed_01_2014
 # 18        ed_02_2015
-# 19        ed14_URL_FR
-# 20        ed15_URL_FR
-# 21        ed15_URL_EN
-# 22        URL_FB
-# 23        URL_TWITTER
-# 24        URL_GPLUS
-# 25        URL_THUMB
-# 26        x_longitude
-# 27        y_latitude
-# 28        X_NOMINATIM
-# 29        Y_NOMINATIM
-# 30        LI_ID_EVT
-# 31        URL_CITYMAPPER
+# 19        ed_03_2016
+# 20        ed14_URL_FR
+# 21        ed15_URL_FR
+# 22        ed15_URL_EN
+# 23        ed16_URL_FR
+# 24        ed16_URL_EN
+# 25        URL_INSTA
+# 26        URL_FB
+# 27        URL_TWITTER
+# 28        URL_GPLUS
+# 29        URL_THUMB
+# 30        URL_MAIL
+# 31        x_longitude
+# 32        y_latitude
+# 33        X_NOMINATIM
+# 34        Y_NOMINATIM
+# 35        LI_ID_EVT
+# 36        URL_CITYMAPPER
+# 37        FS_ID
+# 38        UTP_ID
 
 # /Structure attendue ##################################
 
 # ouverture du fichier des participants en lecture
-wb = load_workbook(filename='ParisBeerWeek_participants.xlsx',
+wb = load_workbook(filename='ParisBeerWeek_participants_{}.xlsx'.format(edition),
                    # read_only=True,
                    guess_types=True,
                    data_only=True,
@@ -85,8 +95,8 @@ wb = load_workbook(filename='ParisBeerWeek_participants.xlsx',
 
 ws = wb.worksheets[0]  # ws = première feuille
 
-row_count = ws.get_highest_row() - 1
-column_count = ws.get_highest_column() + 1
+row_count = ws.max_row
+column_count = ws.max_column
 
 print(row_count)
 print(column_count)
@@ -147,14 +157,17 @@ for row in ws.iter_rows(row_offset=1):
         # print(addr.encode("UTF-8"))
         print(location.address.encode("utf8"))
         print((location.latitude, location.longitude))
+    except AttributeError:
+        print("no address: " + nom)
+        continue
 
     # adding the coordinates obtained into the file
-    row[28].value = location.longitude
-    row[29].value = location.latitude
+    row[33].value = location.longitude
+    row[34].value = location.latitude
 
 
 # ajout des coordonnées calculées par Nominatim
-wb.save('ParisBeerWeek_participants.xlsx')
+wb.save('ParisBeerWeek_participants_{}.xlsx'.format(edition))
 
 # ############################## EVENEMENTS
 
@@ -196,7 +209,7 @@ wb.save('ParisBeerWeek_participants.xlsx')
 # 33        Y_NOMINATIM
 
 # ouverture du fichier des participants en lecture
-wb = load_workbook(filename='ParisBeerWeek_evenements.xlsx',
+wb = load_workbook(filename='ParisBeerWeek_evenements_{}.xlsx'.format(edition),
                    # read_only=True,
                    guess_types=True,
                    data_only=True,
@@ -296,7 +309,7 @@ for row in ws.iter_rows(row_offset=1):
         pass
 
 # ajout des coordonnées calculées par Nominatim
-wb.save('ParisBeerWeek_evenements.xlsx')
+wb.save('ParisBeerWeek_evenements_{0}.xlsx'.format(edition))
 
 # #############################################################################
 # ##### Stand alone program ########

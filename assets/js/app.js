@@ -42,7 +42,7 @@ $("#login-btn").click(function() {
 });
 
 $("#list-btn").click(function() {
-  $('#sidebar').toggle();
+  $('#sidebar').toggleClass('slip');
   map.invalidateSize();
   return false;
 });
@@ -53,13 +53,13 @@ $("#nav-btn").click(function() {
 });
 
 $("#sidebar-toggle-btn").click(function() {
-  $("#sidebar").toggle();
+  $("#sidebar").toggleClass('slip');
   map.invalidateSize();
   return false;
 });
 
 $("#sidebar-hide-btn").click(function() {
-  $('#sidebar').hide();
+  $('#sidebar').addClass('slip');
   map.invalidateSize();
 });
 
@@ -108,7 +108,7 @@ function syncSidebar() {
   participants.eachLayer(function (layer) {
     if (map.hasLayer(participantLayer)) {
       if (map.getBounds().contains(layer.getLatLng())) {
-        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><i class="fa fa-users"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+        $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img src="' + imgFromType[layer.feature.properties.TYPE] + '" /></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       }
     }
   });
@@ -179,7 +179,37 @@ var markerClusters = new L.MarkerClusterGroup({
   disableClusteringAtZoom: 16
 });
 
-
+// marqueues personnalisés avec une image
+var breweryIcon = L.icon({
+  iconUrl: 'assets/img/icon_brewery.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
+var barIcon = L.icon({
+  iconUrl: 'assets/img/icon_bar.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
+var shopIcon = L.icon({
+  iconUrl: 'assets/img/icon_shop.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
+var assoIcon = L.icon({
+  iconUrl: 'assets/img/icon_asso.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
+var distIcon = L.icon({
+  iconUrl: 'assets/img/icon_dist.png',
+  shadowUrl: 'assets/img/icon_shadow.png',
+  iconAnchor:   [30, 30],
+  shadowAnchor: [17, 0]
+});
 // marqueurs personnalisés via Font Awesome
 var participantMarker = L.AwesomeMarkers.icon({
   icon: 'users',
@@ -282,7 +312,7 @@ var events15 = L.geoJson(null, {
 });
 $.getJSON("data/ParisBeerWeek_evenements.geojson", function (data) {
   events15.addData(data);
-  map.addLayer(event15Layer);
+  /*map.addLayer(event15Layer);*/
 });
 
 var fsId = 'WAN1BD2P0XKNTBOU4VG3MD1EIM5RH1G3QNC05TIQRERULKSC';
@@ -304,7 +334,7 @@ var addFoursquareInfos = function(feature) {
       _.each(items, function(photo) {
         var div = $('<div>').addClass('grid-item');
         var img = $('<img>');
-        img.attr('src', photo.prefix + 'original' + photo.suffix);
+        img.attr('src', photo.prefix + 'width250' + photo.suffix);
         div.append(img);
         container.append(div);
       });
@@ -330,7 +360,7 @@ var addUntappdInfos = function(feature) {
     var response = data.response;
     var checkins = response.checkins.items;
     var eventCheckins = _.filter(checkins, function(checkin) {
-      return new Date(checkin.created_at) >= new Date(2016, 03, 15);
+      return new Date(checkin.created_at) >= new Date(2016, 03, 29);
     });
     var label = $('<span>')
     .addClass('label label-primary')
@@ -339,11 +369,29 @@ var addUntappdInfos = function(feature) {
   });
 };
 
+var iconFromType = {
+  BAR: barIcon,
+  CAVE: shopIcon,
+  BRASSERIE: breweryIcon,
+  DISTRIBUTEUR: distIcon,
+  ASSOCIATION: assoIcon
+};
+
+var imgFromType = {
+  BAR: 'assets/img/icon_bar.png',
+  CAVE: 'assets/img/icon_shop.png',
+  BRASSERIE: 'assets/img/icon_brewery.png',
+  DISTRIBUTEUR: 'assets/img/icon_dist.png',
+  ASSOCIATION: 'assets/img/icon_asso.png'
+};
+
 /* Empty layer placeholder to add to layer control for listening when to add/remove participants to markerClusters layer */
 var participantLayer = L.geoJson(null);
 var participants = L.geoJson(null, {
   pointToLayer: function (feature, latlng) {
-    return L.marker(latlng, {icon: participantMarker,
+    var icon = iconFromType[feature.properties.TYPE];
+    return L.marker(latlng, {
+      icon: icon,
       title: feature.properties.NAME,
       riseOnHover: true
     });
@@ -373,8 +421,9 @@ var participants = L.geoJson(null, {
 
       layer.on({
         click: function (e) {
-
-          $("#feature-title").html(feature.properties.NAME);
+          var title = $("#feature-title").empty();
+          $('<img>').attr('src', imgFromType[feature.properties.TYPE]).appendTo(title);
+          $('<span>').html(feature.properties.NAME).appendTo(title);
           $("#feature-info").html(content);
           $("#featureModal").modal("show");
 
@@ -388,7 +437,7 @@ var participants = L.geoJson(null, {
           highlight.clearLayers().addLayer(L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], highlightStyle));
         }
       });
-      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="assets/img/participant.png"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
+      $("#feature-list tbody").append('<tr class="feature-row" id="' + L.stamp(layer) + '" lat="' + layer.getLatLng().lat + '" lng="' + layer.getLatLng().lng + '"><td style="vertical-align: middle;"><img width="16" height="18" src="' + imgFromType[feature.properties.TYPE] + '"></td><td class="feature-name">' + layer.feature.properties.NAME + '</td><td style="vertical-align: middle;"><i class="fa fa-chevron-right pull-right"></i></td></tr>');
       participantSearch.push({
         name: layer.feature.properties.NAME,
         address: layer.feature.properties.ADDRESS,
@@ -533,7 +582,7 @@ var baseLayers = {
 
 var groupedOverlays = {
   "Paris Beer Week #2": {
-    "<i class='fa fa-users'></i>&nbsp;Participants&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/participants/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/92115642a6234bf2a3379b9be9bedd83?lock' id='metadata-part' title='M&eacute;tadonn&eacute;es'><i class='fa fa-info-circle'></i></a>": participantLayer,
+    "<span class='half-big'>&#x2b21;</span></i>&nbsp;Participants&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/participants/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/92115642a6234bf2a3379b9be9bedd83?lock' id='metadata-part' title='M&eacute;tadonn&eacute;es'><i class='fa fa-info-circle'></i></a>": participantLayer,
     "<i class='fa fa-calendar orange'>&nbsp;Ev&eacute;nements&nbsp;<a title='Site internet' target='_blank' href='http://laparisbeerweek.com/2015/programme/'><i class='fa fa-globe'></i></a>&nbsp;-&nbsp;<a href='#' data-toggle='modal' data-target='#metadataModal' data-url='http://open.isogeo.com/s/344d51c3edfb435daf9d98d948fa207e/Sbd1w7PgqE8n7LDq3azRqNhiMHZf0/m/cc9d1de9f1164159bea1465ef9826eb0?lock' id='metadata-event' title='M&eacute;tadonn&eacute;es'><i class='fa fa-info-circle'></i></a>": event15Layer
     
   },

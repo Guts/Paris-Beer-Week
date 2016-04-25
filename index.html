@@ -34,10 +34,10 @@
       <div class="container-fluid">
         <div class="navbar-header">
           <div class="navbar-icon-container">
-            <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-bars fa-lg white"></i></a>
-            <a href="#" class="navbar-icon pull-right visible-xs" id="sidebar-toggle-btn"><i class="fa fa-search fa-lg white"></i></a>
+            <a href="#" class="navbar-icon pull-right visible-xs" id="nav-btn"><i class="fa fa-bars fa-lg"></i></a>
+            <a href="#" class="navbar-icon pull-right visible-xs" id="sidebar-toggle-btn"><i class="fa fa-search fa-lg"></i></a>
           </div>
-          <a class="navbar-brand" target="_blank" href="http://laparisbeerweek.com">Paris Beer Week #2</a>
+          <a class="navbar-brand" target="_blank" href="http://laparisbeerweek.com">PBW<span class="blue">3</span></a>
         </div>
         <div class="navbar-collapse collapse">
           <form class="navbar-form navbar-right" role="search">
@@ -47,15 +47,15 @@
             </div>
           </form>
           <ul class="nav navbar-nav">
-            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle white"></i>&nbsp;&nbsp;A propos</a></li>
+            <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="about-btn"><i class="fa fa-question-circle"></i>&nbsp;&nbsp;A propos</a></li>
             <li class="dropdown">
-              <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe white"></i>&nbsp;&nbsp;Outils <b class="caret"></b></a>
+              <a id="toolsDrop" href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-globe"></i>&nbsp;&nbsp;Outils <b class="caret"></b></a>
               <ul class="dropdown-menu">
                 <li><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="full-extent-btn"><i class="fa fa-arrows-alt"></i>&nbsp;&nbsp;Tout Paris Beer Week</a></li>
               </ul>
             </li>
             <li class="dropdown">
-                <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i class="fa fa-cloud-download white"></i>&nbsp;&nbsp;T&eacute;l&eacute;charger<b class="caret"></b></a>
+                <a class="dropdown-toggle" id="downloadDrop" href="#" role="button" data-toggle="dropdown"><i class="fa fa-cloud-download"></i>&nbsp;&nbsp;T&eacute;l&eacute;charger<b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li class="dropdown-header">Les donn&eacute;es au format GeoJSON</li>
                   <li><a href="data/ParisBeerWeek_participants.geojson" download="ParisBeerWeek_participants.geojson" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-users"></i>&nbsp;&nbsp;Participants</a></li>
@@ -67,7 +67,7 @@
                   <li><a href="https://github.com/bmcbride/bootleaf" target="_blank" data-toggle="collapse" data-target=".navbar-collapse.in"><i class="fa fa-github"></i>&nbsp;&nbsp;Le modèle utilis&eacute;</a></li> 
                 </ul>
             </li>
-            <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list white"></i>&nbsp;&nbsp;Afficher/masquer la liste</a></li>
+            <li class="hidden-xs"><a href="#" data-toggle="collapse" data-target=".navbar-collapse.in" id="list-btn"><i class="fa fa-list"></i>&nbsp;&nbsp;Afficher/masquer la liste</a></li>
           </ul>
         </div><!--/.navbar-collapse -->
       </div>
@@ -79,7 +79,8 @@
           <div class="panel panel-default" id="features">
             <div class="panel-heading">
               <h3 class="panel-title">Points d'int&eacute;rêt
-              <button type="button" class="btn btn-xs btn-default pull-right" id="sidebar-hide-btn"><i class="fa fa-chevron-left"></i></button></h3>
+                <i class="fa fa-chevron-left pull-right" id="sidebar-hide-btn"></i>
+              </h3>
             </div>
             <div class="panel-body">
               <div class="row">
@@ -221,7 +222,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button class="close" type="button" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title text-primary" id="feature-title"></h4>
+            <h2 class="modal-title text-primary" id="feature-title"></h2>
           </div>
           <div class="modal-body" id="feature-info"></div>
           <div class="modal-footer">
